@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gear List Today by BNG</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+.drive-bar{display:flex;align-items:center;gap:10px;padding:8px 0 4px;margin-bottom:8px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.drive-status{font-size:12px;color:var(--text3);}
+.drive-status.ok{color:var(--accent);}
+.drive-status.err{color:var(--danger);}
+</style>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -134,6 +141,9 @@ input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--ac
       <p>プランを選んで装備を管理・チェック</p>
     </div>
     <div class="header-right">
+      <button class="btn btn-green" id="driveLoginBtn" onclick="driveLogin()" style="display:none">Googleでログイン</button>
+      <button class="btn" id="driveSaveBtn" onclick="driveSave()" style="display:none">ドライブに保存</button>
+      <span class="drive-status" id="driveStatus"></span>
       <button class="btn btn-green" onclick="showModal('share')">URLで共有</button>
       <button class="btn" onclick="showModal('sns')">SNS用画像</button>
       <button class="btn" onclick="showModal('markdown')">Markdown</button>
@@ -555,6 +565,100 @@ function togBW(catId, id) {
 }
 function addCat() { var el=document.getElementById('newCatN'); var n=el?el.value.trim():''; if(!n)return; S.plans[S.cur].categories[n]=[]; S.modal=null; save(); render(); }
 function delPlan() { if(!confirm('「'+S.cur+'」を削除しますか？'))return; delete S.plans[S.cur]; S.cur=Object.keys(S.plans)[0]; save(); render(); }
+
+var GAPI_CLIENT_ID = '588269285235-jgjj5fs849jsbpn69h862ac895clvulb.apps.googleusercontent.com';
+var GAPI_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+var DRIVE_FILE_NAME = 'gear-list-today.json';
+var driveToken = null;
+var driveFileId = null;
+var driveSaveTimer = null;
+
+function driveSetStatus(msg, cls) {
+  var el = document.getElementById('driveStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'drive-status' + (cls ? ' '+cls : '');
+}
+
+function driveLogin() {
+  google.accounts.oauth2.initTokenClient({
+    client_id: GAPI_CLIENT_ID,
+    scope: GAPI_SCOPE,
+    callback: function(resp) {
+      if (resp.error) { driveSetStatus('ログイン失敗', 'err'); return; }
+      driveToken = resp.access_token;
+      document.getElementById('driveLoginBtn').style.display = 'none';
+      document.getElementById('driveSaveBtn').style.display = '';
+      driveSetStatus('読み込み中...', '');
+      driveLoad();
+    }
+  }).requestAccessToken();
+}
+
+function driveLoad() {
+  fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+DRIVE_FILE_NAME+'%22&fields=files(id,name)', {
+    headers: { Authorization: 'Bearer '+driveToken }
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.files && d.files.length > 0) {
+      driveFileId = d.files[0].id;
+      fetch('https://www.googleapis.com/drive/v3/files/'+driveFileId+'?alt=media', {
+        headers: { Authorization: 'Bearer '+driveToken }
+      }).then(function(r){ return r.json(); }).then(function(data) {
+        if (data && data.plans) {
+          S.plans = data.plans;
+          S.cur = (data.cur && S.plans[data.cur]) ? data.cur : Object.keys(S.plans)[0];
+          S.genres = data.genres || S.genres;
+          S.styles = data.styles || S.styles;
+          S.destinations = data.destinations || S.destinations;
+          S.nextId = data.nextId || S.nextId;
+          save();
+          driveSetStatus('同期済み ✓', 'ok');
+          render();
+        }
+      }).catch(function(){ driveSetStatus('読み込み失敗', 'err'); });
+    } else {
+      driveSetStatus('新規ファイルを作成します...', '');
+      driveSave();
+    }
+  }).catch(function(){ driveSetStatus('接続失敗', 'err'); });
+}
+
+function driveSave() {
+  if (!driveToken) return;
+  driveSetStatus('保存中...', '');
+  var data = JSON.stringify({plans:S.plans,cur:S.cur,genres:S.genres,styles:S.styles,destinations:S.destinations,nextId:S.nextId});
+  var boundary = 'glt_boundary_xyz';
+  var meta = driveFileId ? JSON.stringify({name:DRIVE_FILE_NAME}) : JSON.stringify({name:DRIVE_FILE_NAME,parents:['appDataFolder']});
+  var body = '--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+meta+'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+data+'\r\n--'+boundary+'--';
+  var method = driveFileId ? 'PATCH' : 'POST';
+  var url = driveFileId
+    ? 'https://www.googleapis.com/upload/drive/v3/files/'+driveFileId+'?uploadType=multipart'
+    : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+  fetch(url, {
+    method: method,
+    headers: { Authorization: 'Bearer '+driveToken, 'Content-Type': 'multipart/related; boundary='+boundary },
+    body: body
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.id) { driveFileId = d.id; driveSetStatus('保存済み ✓', 'ok'); }
+    else { driveSetStatus('保存失敗', 'err'); }
+  }).catch(function(){ driveSetStatus('保存失敗', 'err'); });
+}
+
+function driveAutoSave() {
+  if (!driveToken) return;
+  clearTimeout(driveSaveTimer);
+  driveSaveTimer = setTimeout(driveSave, 2000);
+}
+
+var _origSave = save;
+save = function() { _origSave(); driveAutoSave(); };
+
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('driveLoginBtn').style.display = '';
+    driveSetStatus('Googleにログインするとデータが自動同期されます', '');
+  }, 500);
+});
 
 render();
 </script>
