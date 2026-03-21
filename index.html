@@ -55,31 +55,33 @@ select.plan-select{border:1px solid var(--border2);border-radius:var(--radius);p
 .progress-fill{height:3px;background:var(--accent);border-radius:2px;transition:width 0.4s;}
 .tags{margin-bottom:1rem;display:flex;gap:6px;flex-wrap:wrap;}
 .tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border);font-weight:500;}
-.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:1rem;overflow:hidden;}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:0;overflow:hidden;}
 .section-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;user-select:none;background:var(--surface2);}
 .section-head:hover{background:var(--border);}
 .section-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
 .section-badge{font-size:11px;color:var(--text2);font-weight:400;}
 .section-arrow{color:var(--text2);font-size:12px;transition:transform 0.2s;}
 .section-arrow.open{transform:rotate(90deg);}
-.col-headers{display:grid;grid-template-columns:22px 1fr 62px 72px 1fr 56px 52px;gap:8px;padding:5px 16px;border-top:1px solid var(--border);background:var(--surface2);}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
+@media(max-width:640px){.cat-grid{grid-template-columns:1fr;}}
+.col-headers{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 52px;gap:6px;padding:4px 12px;border-top:1px solid var(--border);background:var(--surface2);}
 .col-headers span{font-size:10px;color:var(--text2);letter-spacing:0.04em;font-weight:600;}
-.item-row{display:grid;grid-template-columns:22px 1fr 62px 72px 1fr 56px 52px;gap:8px;align-items:center;padding:7px 16px;border-top:1px solid var(--border);transition:background 0.1s;}
+.item-row{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 52px;gap:6px;align-items:center;padding:5px 12px;border-top:1px solid var(--border);transition:background 0.1s;}
 .item-row:hover{background:var(--surface2);}
 .bw-excl{display:flex;flex-direction:column;align-items:center;gap:2px;}
 .bw-excl input{width:14px;height:14px;accent-color:var(--warn);cursor:pointer;}
 .bw-excl-on{opacity:0.45;}
-input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
-.item-name{font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--accent);}
+.item-name{font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .item-name.checked{text-decoration:line-through;color:var(--text3);}
-.num-input{border:1px solid var(--border);border-radius:6px;padding:3px 4px;font-size:12px;width:100%;text-align:center;color:var(--text);background:var(--surface);font-family:inherit;}
+.num-input{border:1px solid var(--border);border-radius:6px;padding:2px 3px;font-size:11px;width:100%;text-align:center;color:var(--text);background:var(--surface);font-family:inherit;}
 .num-input:focus{outline:none;border-color:var(--accent);}
-.memo-input{border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:12px;width:100%;color:var(--text2);background:var(--surface);font-family:inherit;}
+.memo-input{border:1px solid var(--border);border-radius:6px;padding:2px 6px;font-size:11px;width:100%;color:var(--text2);background:var(--surface);font-family:inherit;}
 .memo-input:focus{outline:none;border-color:var(--accent);}
-.add-row{display:flex;gap:8px;padding:8px 16px;border-top:1px solid var(--border);}
-.add-row input{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;font-size:13px;color:var(--text);background:var(--surface);font-family:inherit;}
+.add-row{display:flex;gap:6px;padding:6px 12px;border-top:1px solid var(--border);}
+.add-row input{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;font-size:12px;color:var(--text);background:var(--surface);font-family:inherit;}
 .add-row input:focus{outline:none;border-color:var(--accent);}
-.empty-cat{padding:14px 16px;font-size:12px;color:var(--text3);font-style:italic;}
+.empty-cat{padding:12px 14px;font-size:12px;color:var(--text3);font-style:italic;}
 .toolbar{margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:12px;}
 .toolbar-label{font-size:11px;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase;}
 .toolbar-btns{display:flex;gap:8px;flex-wrap:wrap;}
@@ -113,21 +115,22 @@ input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--ac
   body{background:#fff;color:#000;}
   .no-print{display:none!important;}
   .container{max-width:100%;padding:0.5rem;}
-  .section{border:1px solid #999;page-break-inside:avoid;margin-bottom:0.75rem;}
+  .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .section{border:1px solid #999;page-break-inside:avoid;margin-bottom:0;}
   .section-head{background:#c8daea!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid #7ab0de;}
   .section-title{color:#0a3a6a!important;}
   .section-badge{color:#1a5a8a!important;}
   .col-headers{background:#ddeaf8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   .col-headers span{color:#0a3a6a!important;}
-  .item-row{padding:5px 12px;}
-  .item-name{font-size:12px;}
-  .num-input,.memo-input{border:none;background:transparent;font-size:12px;}
+  .item-row{padding:3px 10px;}
+  .item-name{font-size:11px;}
+  .num-input,.memo-input{border:none;background:transparent;font-size:11px;}
   .add-row,.btn-danger{display:none;}
   .stats{margin-bottom:1rem;}
   .stat{border:1px solid #999;padding:8px 12px;}
   .stat-value{font-size:18px;}
   .print-header{display:block!important;}
-  input[type=checkbox]{width:13px;height:13px;}
+  input[type=checkbox]{width:12px;height:12px;}
 }
 .print-header{display:none;font-size:11px;color:#666;margin-bottom:0.5rem;border-bottom:1px solid #ccc;padding-bottom:0.5rem;}
 </style>
@@ -146,6 +149,7 @@ input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--ac
       <span class="drive-status" id="driveStatus"></span>
       <button class="btn btn-green" onclick="showModal('share')">URLで共有</button>
       <button class="btn" onclick="showModal('sns')">SNS用画像</button>
+      <button class="btn" onclick="saveBlogImage()">ブログ用画像</button>
       <button class="btn" onclick="showModal('markdown')">Markdown</button>
       <button class="btn" onclick="exportJSON()">書き出し</button>
       <label class="btn" style="cursor:pointer">読み込む<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
@@ -204,19 +208,19 @@ var S = {
 };
 
 var THEMES = {
-  blue:     {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa', cardBg:'#1a4a7a', cardSurface:'#0d3358', cardAccent:'#7ab8e8', cardSub:'#4a8ab8'},
-  green:    {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a', cardBg:'#1a4a32', cardSurface:'#0d3322', cardAccent:'#7ad5a8', cardSub:'#4a9a70'},
-  orange:   {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840', cardBg:'#7a3a08', cardSurface:'#562808', cardAccent:'#f6c06a', cardSub:'#c07830'},
-  red:      {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060', cardBg:'#7a1010', cardSurface:'#520a0a', cardAccent:'#f5a8a0', cardSub:'#c06060'},
-  purple:   {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8', cardBg:'#3a1478', cardSurface:'#280e52', cardAccent:'#c4b5fd', cardSub:'#8870d0'},
-  navy:     {accent:'#1e3a5f', accentBg:'#e0e8f4', accentBorder:'#8090b8', bg:'#eceef4', surface:'#ffffff', surface2:'#dde2ee', border:'#b0bcd8', border2:'#8090b8', text:'#080e1e', text2:'#1e2e4a', text3:'#5060808', cardBg:'#0e1e3a', cardSurface:'#080e22', cardAccent:'#8090c8', cardSub:'#405080'},
-  teal:     {accent:'#0d7c7c', accentBg:'#e0f5f5', accentBorder:'#70caca', bg:'#eef6f6', surface:'#ffffff', surface2:'#d8eeee', border:'#a0d8d8', border2:'#70baba', text:'#001e1e', text2:'#0a3838', text3:'#408080', cardBg:'#065050', cardSurface:'#033030', cardAccent:'#70caca', cardSub:'#309090'},
-  brown:    {accent:'#7c4a1e', accentBg:'#f5ede0', accentBorder:'#caa070', bg:'#f6f0ea', surface:'#ffffff', surface2:'#eeddd0', border:'#d8c0a0', border2:'#baa080', text:'#1e0e00', text2:'#3e2010', text3:'#907050', cardBg:'#4a2a0e', cardSurface:'#301808', cardAccent:'#caa070', cardSub:'#906040'},
-  pink:     {accent:'#be185d', accentBg:'#fce7f3', accentBorder:'#f9a8d4', bg:'#fdf2f8', surface:'#ffffff', surface2:'#fce7f3', border:'#f8b4d4', border2:'#f08ab0', text:'#1e0014', text2:'#5c1040', text3:'#b06080', cardBg:'#7a0e3c', cardSurface:'#520828', cardAccent:'#f9a8d4', cardSub:'#d06090'},
-  gray:     {accent:'#4a5568', accentBg:'#edf2f7', accentBorder:'#a0aec0', bg:'#f5f7fa', surface:'#ffffff', surface2:'#e8ecf2', border:'#c8d0dc', border2:'#a0aec0', text:'#1a202c', text2:'#2d3748', text3:'#718096', cardBg:'#2d3748', cardSurface:'#1a202c', cardAccent:'#a0aec0', cardSub:'#606878'},
-  yellow:   {accent:'#92740a', accentBg:'#fefce8', accentBorder:'#f0d060', bg:'#fefde8', surface:'#ffffff', surface2:'#fdf8d0', border:'#ece090', border2:'#d8c060', text:'#1e1800', text2:'#4a3c00', text3:'#908040', cardBg:'#5a4808', cardSurface:'#3a2e04', cardAccent:'#f0d060', cardSub:'#a08030'},
-  lime:     {accent:'#3a7c1e', accentBg:'#edfce0', accentBorder:'#90d870', bg:'#f0fce8', surface:'#ffffff', surface2:'#e0f8d0', border:'#b8e8a0', border2:'#90cc70', text:'#0a1e00', text2:'#204010', text3:'#608040', cardBg:'#284e10', cardSurface:'#183008', cardAccent:'#90d870', cardSub:'#60a040'},
-  skyblue:  {accent:'#0a7abf', accentBg:'#e0f4fc', accentBorder:'#70c0e8', bg:'#eef8fc', surface:'#ffffff', surface2:'#d8eef8', border:'#a0d4ec', border2:'#70b8de', text:'#001828', text2:'#0a3050', text3:'#4088b0', cardBg:'#054878', cardSurface:'#022e50', cardAccent:'#70c0e8', cardSub:'#3090c0'},
+  blue:     {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa', cardBg:'#1a4a7a', cardSurface:'#0d3358', cardAccent:'#7ab8e8', cardSub:'#4a8ab8', iconColor:'#1a5fa8'},
+  green:    {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a', cardBg:'#1a4a32', cardSurface:'#0d3322', cardAccent:'#7ad5a8', cardSub:'#4a9a70', iconColor:'#2d6a4f'},
+  orange:   {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840', cardBg:'#7a3a08', cardSurface:'#562808', cardAccent:'#f6c06a', cardSub:'#c07830', iconColor:'#f97316'},
+  red:      {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060', cardBg:'#7a1010', cardSurface:'#520a0a', cardAccent:'#f5a8a0', cardSub:'#c06060', iconColor:'#ef4444'},
+  purple:   {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8', cardBg:'#3a1478', cardSurface:'#280e52', cardAccent:'#c4b5fd', cardSub:'#8870d0', iconColor:'#5b21b6'},
+  navy:     {accent:'#1e3a5f', accentBg:'#e0e8f4', accentBorder:'#8090b8', bg:'#eceef4', surface:'#ffffff', surface2:'#dde2ee', border:'#b0bcd8', border2:'#8090b8', text:'#080e1e', text2:'#1e2e4a', text3:'#506080', cardBg:'#0e1e3a', cardSurface:'#080e22', cardAccent:'#8090c8', cardSub:'#405080', iconColor:'#1e3a5f'},
+  teal:     {accent:'#0d7c7c', accentBg:'#e0f5f5', accentBorder:'#70caca', bg:'#eef6f6', surface:'#ffffff', surface2:'#d8eeee', border:'#a0d8d8', border2:'#70baba', text:'#001e1e', text2:'#0a3838', text3:'#408080', cardBg:'#065050', cardSurface:'#033030', cardAccent:'#70caca', cardSub:'#309090', iconColor:'#0d7c7c'},
+  brown:    {accent:'#7c4a1e', accentBg:'#f5ede0', accentBorder:'#caa070', bg:'#f6f0ea', surface:'#ffffff', surface2:'#eeddd0', border:'#d8c0a0', border2:'#baa080', text:'#1e0e00', text2:'#3e2010', text3:'#907050', cardBg:'#4a2a0e', cardSurface:'#301808', cardAccent:'#caa070', cardSub:'#906040', iconColor:'#7c4a1e'},
+  pink:     {accent:'#be185d', accentBg:'#fce7f3', accentBorder:'#f9a8d4', bg:'#fdf2f8', surface:'#ffffff', surface2:'#fce7f3', border:'#f8b4d4', border2:'#f08ab0', text:'#1e0014', text2:'#5c1040', text3:'#b06080', cardBg:'#7a0e3c', cardSurface:'#520828', cardAccent:'#f9a8d4', cardSub:'#d06090', iconColor:'#f472b6'},
+  gray:     {accent:'#4a5568', accentBg:'#edf2f7', accentBorder:'#a0aec0', bg:'#f5f7fa', surface:'#ffffff', surface2:'#e8ecf2', border:'#c8d0dc', border2:'#a0aec0', text:'#1a202c', text2:'#2d3748', text3:'#718096', cardBg:'#2d3748', cardSurface:'#1a202c', cardAccent:'#a0aec0', cardSub:'#606878', iconColor:'#4a5568'},
+  yellow:   {accent:'#7a6200', accentBg:'#fefce8', accentBorder:'#e8d020', bg:'#fefce0', surface:'#ffffff', surface2:'#faf8c0', border:'#e8e080', border2:'#d0c840', text:'#1a1600', text2:'#3a3400', text3:'#807020', cardBg:'#4a3c00', cardSurface:'#302600', cardAccent:'#e8d020', cardSub:'#a09010', iconColor:'#f5e020'},
+  lime:     {accent:'#3a7c1e', accentBg:'#edfce0', accentBorder:'#90d870', bg:'#f0fce8', surface:'#ffffff', surface2:'#e0f8d0', border:'#b8e8a0', border2:'#90cc70', text:'#0a1e00', text2:'#204010', text3:'#608040', cardBg:'#284e10', cardSurface:'#183008', cardAccent:'#90d870', cardSub:'#60a040', iconColor:'#5dcc2a'},
+  skyblue:  {accent:'#0a7abf', accentBg:'#e0f4fc', accentBorder:'#70c0e8', bg:'#eef8fc', surface:'#ffffff', surface2:'#d8eef8', border:'#a0d4ec', border2:'#70b8de', text:'#001828', text2:'#0a3050', text3:'#4088b0', cardBg:'#054878', cardSurface:'#022e50', cardAccent:'#70c0e8', cardSub:'#3090c0', iconColor:'#29b6f6'},
 };
 
 var THEME_ORDER = ['gray','navy','skyblue','blue','teal','lime','green','yellow','brown','orange','pink','red','purple'];
@@ -285,6 +289,7 @@ function render() {
 
     var cats = Object.keys(plan.categories);
     var firstOpen = false;
+    h += '<div class="cat-grid">';
     cats.forEach(function(cat, idx) {
       var items = plan.categories[cat];
       var open = !S.collapsed[S.cur+'|'+cat];
@@ -309,16 +314,15 @@ function render() {
           h += '<div class="empty-cat">装備なし</div>';
         } else {
           if (showHdr) {
-            h += '<div class="col-headers"><span></span><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span>メモ</span><span style="text-align:center">BW<br>除外</span><span></span></div>';
+            h += '<div class="col-headers"><span></span><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span style="text-align:center">BW除外</span><span></span></div>';
           }
           items.forEach(function(item) {
             var bwOn = item.bwExcl ? true : false;
-            h += '<div class="item-row'+(bwOn?' bw-excl-on':'')+'">';
+            h += '<div class="item-row'+(bwOn?' bw-excl-on':'')+'" title="'+(item.memo?item.memo:'')+'">';
             h += '<input type="checkbox"'+(item.checked?' checked':'')+' onchange="togChk(\''+catId+'\','+item.id+')">';
-            h += '<span class="item-name'+(item.checked?' checked':'')+'">'+esc(item.name)+'</span>';
+            h += '<span class="item-name'+(item.checked?' checked':'')+'" title="'+esc(item.name)+(item.memo?' — '+esc(item.memo):'')+'" style="cursor:default">'+esc(item.name)+'</span>';
             h += '<input type="number" class="num-input" value="'+(item.qty||1)+'" min="1" onchange="updItem(\''+catId+'\','+item.id+',\'qty\',this.value)">';
             h += '<input type="number" class="num-input" value="'+(item.weight||'')+'" placeholder="&mdash;" min="0" onchange="updItem(\''+catId+'\','+item.id+',\'weight\',this.value)">';
-            h += '<input type="text" class="memo-input" value="'+esc(item.memo||'')+'" placeholder="メモ" onchange="updItem(\''+catId+'\','+item.id+',\'memo\',this.value)">';
             h += '<div class="bw-excl"><input type="checkbox"'+(bwOn?' checked':'')+' title="BW除外" onchange="togBW(\''+catId+'\','+item.id+')"></div>';
             h += '<button class="btn btn-danger btn-sm no-print" onclick="delItem(\''+catId+'\','+item.id+')">削除</button>';
             h += '</div>';
@@ -328,6 +332,7 @@ function render() {
       }
       h += '</div>';
     });
+    h += '</div>';
 
     h += '<div class="toolbar no-print"><div style="display:flex;flex-direction:column;gap:6px"><div class="toolbar-label">管理</div>';
     h += '<div class="toolbar-btns"><button class="btn btn-sm" onclick="showModal(\'addCat\')">+ カテゴリ追加</button>';
@@ -338,7 +343,8 @@ function render() {
     THEME_ORDER.forEach(function(name) {
       var t = THEMES[name];
       var active = S.theme === name;
-      h += '<button onclick="setTheme(\''+name+'\')" style="width:28px;height:28px;border-radius:50%;background:'+t.accent+';border:'+(active?'3px solid '+t.text:'2px solid transparent')+';cursor:pointer;outline:'+(active?'2px solid '+t.accentBorder:'none')+'" title="'+themeLabels[name]+'"></button>';
+      var iconCol = t.iconColor || t.accent;
+      h += '<button onclick="setTheme(\''+name+'\')" style="width:28px;height:28px;border-radius:50%;background:'+iconCol+';border:'+(active?'3px solid '+t.text:'2px solid transparent')+';cursor:pointer;outline:'+(active?'2px solid '+t.accentBorder:'none')+'" title="'+themeLabels[name]+'"></button>';
     });
     h += '</div></div></div>';
   }
@@ -563,6 +569,43 @@ function saveCardImage() {
     a.click();
     note.textContent = '保存しました！';
   }).catch(function() { note.textContent = '保存に失敗しました。もう一度お試しください。'; });
+}
+
+function saveBlogImage() {
+  var app = document.getElementById('app');
+  if (!app) return;
+  var t = THEMES[S.theme] || THEMES.blue;
+  var origBg = document.body.style.background;
+  document.body.style.background = t.bg;
+  var wrapper = document.createElement('div');
+  wrapper.style.cssText = 'background:'+t.bg+';padding:20px;display:inline-block;min-width:600px;';
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:13px;color:'+t.text3+';margin-bottom:4px;font-family:sans-serif;';
+  title.textContent = 'Gear List Today by BlueNileGear';
+  var planName = document.createElement('div');
+  planName.style.cssText = 'font-size:22px;font-weight:600;color:'+t.text+';margin-bottom:12px;font-family:sans-serif;';
+  planName.textContent = S.cur;
+  wrapper.appendChild(title);
+  wrapper.appendChild(planName);
+  var clone = app.cloneNode(true);
+  var noPrints = clone.querySelectorAll('.no-print');
+  noPrints.forEach(function(el){ el.remove(); });
+  wrapper.appendChild(clone);
+  wrapper.style.position = 'absolute';
+  wrapper.style.left = '-9999px';
+  document.body.appendChild(wrapper);
+  html2canvas(wrapper, {scale:2, backgroundColor:t.bg, useCORS:true, logging:false}).then(function(canvas) {
+    document.body.removeChild(wrapper);
+    document.body.style.background = origBg;
+    var a = document.createElement('a');
+    a.download = 'gear-list-blog-'+S.cur.replace(/[\/\\]/g,'-')+'.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }).catch(function() {
+    document.body.removeChild(wrapper);
+    document.body.style.background = origBg;
+    alert('画像の生成に失敗しました。もう一度お試しください。');
+  });
 }
 function cpMD() {
   var box = document.getElementById('mdBox'); if (!box) return;
