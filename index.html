@@ -55,7 +55,11 @@ select.plan-select{border:1px solid var(--border2);border-radius:var(--radius);p
 .progress-fill{height:3px;background:var(--accent);border-radius:2px;transition:width 0.4s;}
 .tags{margin-bottom:1rem;display:flex;gap:6px;flex-wrap:wrap;}
 .tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border);font-weight:500;}
-.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:0;overflow:hidden;}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:0;overflow:hidden;transition:opacity 0.15s;}
+.section.dragging{opacity:0.35;}
+.section.drag-over{outline:2px solid var(--accent);outline-offset:2px;}
+.drag-handle{cursor:grab;color:var(--text3);padding:0 4px;font-size:15px;line-height:1;user-select:none;touch-action:none;}
+.drag-handle:active{cursor:grabbing;}
 .section-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;user-select:none;background:var(--surface2);}
 .section-head:hover{background:var(--border);}
 .section-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
@@ -298,12 +302,11 @@ function render() {
       if (showHdr) firstOpen = true;
       var catId = cat.replace(/\W/g,'_');
 
-      h += '<div class="section">';
+      h += '<div class="section" draggable="true" data-catid="'+catId+'" ondragstart="dragStart(event,\''+catId+'\')" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,\''+catId+'\')" ondragend="dragEnd(event)">';
       h += '<div class="section-head">';
-      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
+      h += '<span class="drag-handle no-print" title="ドラッグして並べ替え">&#8942;&#8942;</span>';
+      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer;padding-left:4px">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
       h += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
-      if (idx > 0) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',-1)" title="上へ">↑</button>';
-      if (idx < cats.length-1) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',1)" title="下へ">↓</button>';
       h += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
       h += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
       h += '</span>';
@@ -679,6 +682,42 @@ function togBW(catId, id) {
 }
 function addCat() { var el=document.getElementById('newCatN'); var n=el?el.value.trim():''; if(!n)return; S.plans[S.cur].categories[n]=[]; S.modal=null; save(); render(); }
 function delPlan() { if(!confirm('「'+S.cur+'」を削除しますか？'))return; delete S.plans[S.cur]; S.cur=Object.keys(S.plans)[0]; save(); render(); }
+
+var _dragSrcId = null;
+
+function dragStart(e, catId) {
+  _dragSrcId = catId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function dragDrop(e, targetCatId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!_dragSrcId || _dragSrcId === targetCatId) return;
+  var plan = S.plans[S.cur];
+  var keys = Object.keys(plan.categories);
+  var srcIdx = keys.findIndex(function(k){ return k.replace(/\W/g,'_') === _dragSrcId; });
+  var tgtIdx = keys.findIndex(function(k){ return k.replace(/\W/g,'_') === targetCatId; });
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  keys.splice(tgtIdx, 0, keys.splice(srcIdx, 1)[0]);
+  var newCats = {};
+  keys.forEach(function(k){ newCats[k] = plan.categories[k]; });
+  plan.categories = newCats;
+  _dragSrcId = null;
+  save(); render();
+}
+function dragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  _dragSrcId = null;
+}
 
 function moveCat(catId, dir) {
   var plan = S.plans[S.cur];
