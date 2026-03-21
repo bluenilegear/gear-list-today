@@ -305,8 +305,10 @@ function render() {
 
       h += '<div class="section">';
       h += '<div class="section-head">';
-      h += '<span class="section-title" onclick="showMoveCat(\''+catId+'\')" title="クリックして移動">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
+      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
       h += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
+      if (idx > 0) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',-1)" title="上へ">↑</button>';
+      if (idx < cats.length-1) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',1)" title="下へ">↓</button>';
       h += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
       h += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
       h += '</span>';
