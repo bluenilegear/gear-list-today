@@ -728,7 +728,8 @@ function execMoveCatAt(insertIdx) {
 function moveCat(catId, dir) {
   var plan = S.plans[S.cur];
   var keys = Object.keys(plan.categories);
-  var idx = keys.findIndex(function(k){ return k.replace(/\W/g,'_')===catId; });
+  var idx = parseInt(catId);
+  if (isNaN(idx)) return;
   var newIdx = idx + dir;
   if (newIdx < 0 || newIdx >= keys.length) return;
   var newCats = {};
