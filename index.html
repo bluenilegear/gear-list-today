@@ -197,12 +197,39 @@ var S = {
   genres: ini ? ini.genres : DEFAULT_GENRES.slice(),
   styles: ini ? ini.styles : DEFAULT_STYLES.slice(),
   destinations: ini ? (ini.destinations || []) : [],
+  theme: ini ? (ini.theme || 'blue') : 'blue',
   collapsed: {}, modal: null, mStep: 1, mGenre: '', mStyle: '', mDest: '', mName: '',
   nextId: ini ? (ini.nextId || 300) : 300,
   notice: ''
 };
 
-function save() { try { localStorage.setItem(LS_KEY, JSON.stringify({plans:S.plans,cur:S.cur,genres:S.genres,styles:S.styles,destinations:S.destinations,nextId:S.nextId})); } catch(e) {} }
+var THEMES = {
+  blue:   {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa'},
+  green:  {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a'},
+  orange: {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840'},
+  red:    {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060'},
+  purple: {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8'},
+};
+
+function applyTheme(name) {
+  var t = THEMES[name] || THEMES.blue;
+  var r = document.documentElement.style;
+  r.setProperty('--accent', t.accent);
+  r.setProperty('--accent-bg', t.accentBg);
+  r.setProperty('--accent-border', t.accentBorder);
+  r.setProperty('--bg', t.bg);
+  r.setProperty('--surface', t.surface);
+  r.setProperty('--surface2', t.surface2);
+  r.setProperty('--border', t.border);
+  r.setProperty('--border2', t.border2);
+  r.setProperty('--text', t.text);
+  r.setProperty('--text2', t.text2);
+  r.setProperty('--text3', t.text3);
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({plans:S.plans,cur:S.cur,genres:S.genres,styles:S.styles,destinations:S.destinations,theme:S.theme,nextId:S.nextId})); } catch(e) {}
+}
 function gc(plan) { var t=0,c=0; Object.values(plan.categories).forEach(function(cat){ cat.forEach(function(i){ t++; if(i.checked) c++; }); }); return {t:t,c:c}; }
 function gw(plan) { var w=0; Object.values(plan.categories).forEach(function(cat){ cat.forEach(function(i){ if(i.weight) w += i.weight*(i.qty||1); }); }); return w; }
 function gbw(plan) { var w=0; Object.values(plan.categories).forEach(function(cat){ cat.forEach(function(i){ if(i.weight && !i.bwExcl) w += i.weight*(i.qty||1); }); }); return w; }
@@ -248,7 +275,7 @@ function render() {
 
     var cats = Object.keys(plan.categories);
     var firstOpen = false;
-    cats.forEach(function(cat) {
+    cats.forEach(function(cat, idx) {
       var items = plan.categories[cat];
       var open = !S.collapsed[S.cur+'|'+cat];
       var cw = items.reduce(function(s,i){ return s+(i.weight||0)*(i.qty||1); }, 0);
@@ -257,9 +284,15 @@ function render() {
       var catId = cat.replace(/\W/g,'_');
 
       h += '<div class="section">';
-      h += '<div class="section-head" onclick="togCat(\''+catId+'\')" data-cat="'+esc(cat)+'">';
-      h += '<span class="section-title">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
-      h += '<span class="section-arrow'+(open?' open':'')+'">&#9654;</span></div>';
+      h += '<div class="section-head">';
+      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
+      h += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
+      if (idx > 0) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',-1)" title="上へ">↑</button>';
+      if (idx < cats.length-1) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',1)" title="下へ">↓</button>';
+      h += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
+      h += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
+      h += '</span>';
+      h += '<span class="section-arrow'+(open?' open':'')+'" onclick="togCat(\''+catId+'\')" style="cursor:pointer;margin-left:6px">&#9654;</span></div>';
 
       if (open) {
         if (!items.length) {
@@ -288,7 +321,16 @@ function render() {
 
     h += '<div class="toolbar no-print"><div style="display:flex;flex-direction:column;gap:6px"><div class="toolbar-label">管理</div>';
     h += '<div class="toolbar-btns"><button class="btn btn-sm" onclick="showModal(\'addCat\')">+ カテゴリ追加</button>';
-    h += '<button class="btn btn-sm" onclick="rstChk()">チェックをリセット</button></div></div></div>';
+    h += '<button class="btn btn-sm" onclick="rstChk()">チェックをリセット</button></div></div>';
+    h += '<div style="display:flex;flex-direction:column;gap:6px;margin-top:12px"><div class="toolbar-label">テーマカラー</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    var themeLabels = {blue:'ブルー', green:'グリーン', orange:'オレンジ', red:'レッド', purple:'パープル'};
+    Object.keys(THEMES).forEach(function(name) {
+      var t = THEMES[name];
+      var active = S.theme === name;
+      h += '<button onclick="setTheme(\''+name+'\')" style="width:28px;height:28px;border-radius:50%;background:'+t.accent+';border:'+(active?'3px solid '+t.text:'2px solid transparent')+';cursor:pointer;outline:'+(active?'2px solid '+t.accentBorder:'none')+'" title="'+themeLabels[name]+'"></button>';
+    });
+    h += '</div></div></div>';
   }
 
   app.innerHTML = h;
@@ -359,6 +401,16 @@ function renderModal() {
     }
     m += '</div></div>';
     app.innerHTML += m;
+  }
+
+  if (S.modal === 'renameCat') {
+    var oldName = catFromId(S.modalData||'');
+    var mr = '<div class="modal-bg" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">';
+    mr += '<h2>カテゴリ名を変更</h2>';
+    mr += '<input type="text" id="renameCatInp" value="'+esc(oldName)+'" style="margin-bottom:1rem">';
+    mr += '<div class="modal-actions"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-accent" onclick="execRenameCat()">変更</button></div>';
+    mr += '</div></div>';
+    app.innerHTML += mr;
   }
 
   if (S.modal === 'addCat') {
@@ -566,6 +618,60 @@ function togBW(catId, id) {
 function addCat() { var el=document.getElementById('newCatN'); var n=el?el.value.trim():''; if(!n)return; S.plans[S.cur].categories[n]=[]; S.modal=null; save(); render(); }
 function delPlan() { if(!confirm('「'+S.cur+'」を削除しますか？'))return; delete S.plans[S.cur]; S.cur=Object.keys(S.plans)[0]; save(); render(); }
 
+function moveCat(catId, dir) {
+  var plan = S.plans[S.cur];
+  var keys = Object.keys(plan.categories);
+  var idx = keys.findIndex(function(k){ return k.replace(/\W/g,'_')===catId; });
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= keys.length) return;
+  var newCats = {};
+  keys.splice(newIdx, 0, keys.splice(idx, 1)[0]);
+  keys.forEach(function(k){ newCats[k] = plan.categories[k]; });
+  plan.categories = newCats;
+  save(); render();
+}
+
+function showRenameCat(catId) {
+  S.modal = 'renameCat';
+  S.modalData = catId;
+  render();
+}
+
+function execRenameCat() {
+  var el = document.getElementById('renameCatInp');
+  var newName = el ? el.value.trim() : '';
+  if (!newName) return;
+  var oldName = catFromId(S.modalData||'');
+  if (newName === oldName) { closeModal(); return; }
+  if (S.plans[S.cur].categories[newName] !== undefined) { alert('同じ名前のカテゴリが既にあります'); return; }
+  var plan = S.plans[S.cur];
+  var newCats = {};
+  Object.keys(plan.categories).forEach(function(k) {
+    newCats[k === oldName ? newName : k] = plan.categories[k];
+  });
+  plan.categories = newCats;
+  S.modal = null;
+  save(); render();
+}
+
+function deleteCat(catId) {
+  var cat = catFromId(catId);
+  var items = S.plans[S.cur].categories[cat];
+  if (items && items.length > 0) {
+    if (!confirm('「'+cat+'」には'+items.length+'点の装備があります。カテゴリごと削除しますか？')) return;
+  } else {
+    if (!confirm('「'+cat+'」を削除しますか？')) return;
+  }
+  delete S.plans[S.cur].categories[cat];
+  save(); render();
+}
+
+function setTheme(name) {
+  S.theme = name;
+  applyTheme(name);
+  save(); render();
+}
+
 var GAPI_CLIENT_ID = '588269285235-jgjj5fs849jsbpn69h862ac895clvulb.apps.googleusercontent.com';
 var GAPI_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
 var DRIVE_FILE_NAME = 'gear-list-today.json';
@@ -654,6 +760,7 @@ var _origSave = save;
 save = function() { _origSave(); driveAutoSave(); };
 
 window.addEventListener('load', function() {
+  applyTheme(S.theme);
   setTimeout(function() {
     document.getElementById('driveLoginBtn').style.display = '';
     driveSetStatus('Googleにログインするとデータが自動同期されます', '');
