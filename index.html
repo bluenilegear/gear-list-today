@@ -69,9 +69,9 @@ select.plan-select{border:1px solid var(--border2);border-radius:var(--radius);p
 .move-target-btn.current{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default;}
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(var(--cat-rows),auto);gap:12px;margin-bottom:1rem;}
 @media(max-width:640px){.cat-grid{grid-template-columns:1fr;grid-auto-flow:row;}}
-.col-headers{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 52px;gap:6px;padding:4px 12px;border-top:1px solid var(--border);background:var(--surface2);}
+.col-headers{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 36px 52px;gap:6px;padding:4px 12px;border-top:1px solid var(--border);background:var(--surface2);}
 .col-headers span{font-size:10px;color:var(--text2);letter-spacing:0.04em;font-weight:600;}
-.item-row{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 52px;gap:6px;align-items:center;padding:5px 12px;border-top:1px solid var(--border);transition:background 0.1s;}
+.item-row{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 36px 52px;gap:6px;align-items:center;padding:5px 12px;border-top:1px solid var(--border);transition:background 0.1s;}
 .item-row:hover{background:var(--surface2);}
 .bw-excl{display:flex;flex-direction:column;align-items:center;gap:2px;}
 .bw-excl input{width:14px;height:14px;accent-color:var(--warn);cursor:pointer;}
@@ -320,9 +320,9 @@ function render() {
           h += '<div class="empty-cat">装備なし</div>';
         } else {
           if (showHdr) {
-            h += '<div class="col-headers"><span></span><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span style="text-align:center">BW除外</span><span></span></div>';
+            h += '<div class="col-headers"><span></span><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span style="text-align:center">BW除外</span><span></span><span></span></div>';
           }
-          items.forEach(function(item) {
+          items.forEach(function(item, itemIdx) {
             var bwOn = item.bwExcl ? true : false;
             h += '<div class="item-row'+(bwOn?' bw-excl-on':'')+'">';
             h += '<input type="checkbox"'+(item.checked?' checked':'')+' onchange="togChk(\''+catId+'\','+item.id+')">';
@@ -330,6 +330,10 @@ function render() {
             h += '<input type="number" class="num-input" value="'+(item.qty||1)+'" min="1" onchange="updItem(\''+catId+'\','+item.id+',\'qty\',this.value)">';
             h += '<input type="number" class="num-input" value="'+(item.weight||'')+'" placeholder="&mdash;" min="0" onchange="updItem(\''+catId+'\','+item.id+',\'weight\',this.value)">';
             h += '<div class="bw-excl"><input type="checkbox"'+(bwOn?' checked':'')+' title="BW除外" onchange="togBW(\''+catId+'\','+item.id+')"></div>';
+            h += '<div class="no-print" style="display:flex;flex-direction:column;gap:1px">';
+            if (itemIdx > 0) h += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',-1)">↑</button>';
+            if (itemIdx < items.length-1) h += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',1)">↓</button>';
+            h += '</div>';
             h += '<button class="btn btn-danger btn-sm no-print" onclick="delItem(\''+catId+'\','+item.id+')">削除</button>';
             h += '</div>';
           });
@@ -698,6 +702,15 @@ function togBW(catId, id) {
   var cat = catFromId(catId);
   var item = S.plans[S.cur].categories[cat].find(function(i){ return i.id===id; });
   if (item) { item.bwExcl = !item.bwExcl; save(); render(); }
+}
+function moveItem(catId, id, dir) {
+  var cat = catFromId(catId);
+  var items = S.plans[S.cur].categories[cat];
+  var idx = items.findIndex(function(i){ return i.id===id; });
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= items.length) return;
+  items.splice(newIdx, 0, items.splice(idx, 1)[0]);
+  save(); render();
 }
 function addCat() { var el=document.getElementById('newCatN'); var n=el?el.value.trim():''; if(!n)return; S.plans[S.cur].categories[n]=[]; S.modal=null; save(); render(); }
 function delPlan() { if(!confirm('「'+S.cur+'」を削除しますか？'))return; delete S.plans[S.cur]; S.cur=Object.keys(S.plans)[0]; save(); render(); }
