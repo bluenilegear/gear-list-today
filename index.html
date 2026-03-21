@@ -55,17 +55,18 @@ select.plan-select{border:1px solid var(--border2);border-radius:var(--radius);p
 .progress-fill{height:3px;background:var(--accent);border-radius:2px;transition:width 0.4s;}
 .tags{margin-bottom:1rem;display:flex;gap:6px;flex-wrap:wrap;}
 .tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border);font-weight:500;}
-.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:0;overflow:hidden;transition:opacity 0.15s;}
-.section.dragging{opacity:0.35;}
-.section.drag-over{outline:2px solid var(--accent);outline-offset:2px;}
-.drag-handle{cursor:grab;color:var(--text3);padding:0 4px;font-size:15px;line-height:1;user-select:none;touch-action:none;}
-.drag-handle:active{cursor:grabbing;}
-.section-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;user-select:none;background:var(--surface2);}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:0;overflow:hidden;}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;user-select:none;background:var(--surface2);}
 .section-head:hover{background:var(--border);}
-.section-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.section-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;cursor:pointer;}
+.section-title:hover{color:var(--accent);}
 .section-badge{font-size:11px;color:var(--text2);font-weight:400;}
-.section-arrow{color:var(--text2);font-size:12px;transition:transform 0.2s;}
+.section-arrow{color:var(--text2);font-size:12px;transition:transform 0.2s;cursor:pointer;}
 .section-arrow.open{transform:rotate(90deg);}
+.move-target-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;}
+.move-target-btn{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--border-radius-md,8px);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;text-align:left;font-family:inherit;}
+.move-target-btn:hover{background:var(--accent-bg);border-color:var(--accent-border);}
+.move-target-btn.current{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default;}
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
 @media(max-width:640px){.cat-grid{grid-template-columns:1fr;}}
 .col-headers{display:grid;grid-template-columns:20px 1fr 52px 62px 56px 52px;gap:6px;padding:4px 12px;border-top:1px solid var(--border);background:var(--surface2);}
@@ -302,10 +303,9 @@ function render() {
       if (showHdr) firstOpen = true;
       var catId = cat.replace(/\W/g,'_');
 
-      h += '<div class="section" draggable="true" data-catid="'+catId+'" ondragstart="dragStart(event,\''+catId+'\')" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,\''+catId+'\')" ondragend="dragEnd(event)">';
+      h += '<div class="section">';
       h += '<div class="section-head">';
-      h += '<span class="drag-handle no-print" title="ドラッグして並べ替え">&#8942;&#8942;</span>';
-      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer;padding-left:4px">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
+      h += '<span class="section-title" onclick="showMoveCat(\''+catId+'\')" title="クリックして移動">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
       h += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
       h += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
       h += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
@@ -420,6 +420,28 @@ function renderModal() {
     }
     m += '</div></div>';
     app.innerHTML += m;
+  }
+
+  if (S.modal === 'moveCat') {
+    var movingCat = catFromId(S.modalData||'');
+    var plan2 = S.plans[S.cur];
+    var allCats = Object.keys(plan2.categories);
+    var mm = '<div class="modal-bg" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">';
+    mm += '<h2>「'+esc(movingCat)+'」の挿入位置を選んでください</h2>';
+    mm += '<div style="display:flex;flex-direction:column;gap:6px;margin:12px 0">';
+    allCats.forEach(function(cat, idx) {
+      var isCurrent = cat === movingCat;
+      if (!isCurrent) {
+        mm += '<button class="move-target-btn" onclick="execMoveCatAt('+idx+')">↓ '+esc(cat)+' の前</button>';
+      } else {
+        mm += '<div style="padding:7px 12px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;font-size:13px;color:var(--accent);font-weight:500;">▶ '+esc(cat)+'（現在位置）</div>';
+      }
+    });
+    mm += '<button class="move-target-btn" onclick="execMoveCatAt('+allCats.length+')">↓ 一番最後に移動</button>';
+    mm += '</div>';
+    mm += '<div class="modal-actions"><button class="btn" onclick="closeModal()">キャンセル</button></div>';
+    mm += '</div></div>';
+    app.innerHTML += mm;
   }
 
   if (S.modal === 'renameCat') {
@@ -675,40 +697,27 @@ function togBW(catId, id) {
 function addCat() { var el=document.getElementById('newCatN'); var n=el?el.value.trim():''; if(!n)return; S.plans[S.cur].categories[n]=[]; S.modal=null; save(); render(); }
 function delPlan() { if(!confirm('「'+S.cur+'」を削除しますか？'))return; delete S.plans[S.cur]; S.cur=Object.keys(S.plans)[0]; save(); render(); }
 
-var _dragSrcId = null;
+function showMoveCat(catId) {
+  S.modal = 'moveCat';
+  S.modalData = catId;
+  render();
+}
 
-function dragStart(e, catId) {
-  _dragSrcId = catId;
-  e.dataTransfer.effectAllowed = 'move';
-  e.currentTarget.classList.add('dragging');
-}
-function dragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  e.currentTarget.classList.add('drag-over');
-}
-function dragLeave(e) {
-  e.currentTarget.classList.remove('drag-over');
-}
-function dragDrop(e, targetCatId) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  if (!_dragSrcId || _dragSrcId === targetCatId) return;
+function execMoveCatAt(insertIdx) {
+  var srcCatId = S.modalData;
   var plan = S.plans[S.cur];
   var keys = Object.keys(plan.categories);
-  var srcIdx = keys.findIndex(function(k){ return k.replace(/\W/g,'_') === _dragSrcId; });
-  var tgtIdx = keys.findIndex(function(k){ return k.replace(/\W/g,'_') === targetCatId; });
-  if (srcIdx < 0 || tgtIdx < 0) return;
-  keys.splice(tgtIdx, 0, keys.splice(srcIdx, 1)[0]);
+  var srcIdx = keys.findIndex(function(k){ return k.replace(/\W/g,'_') === srcCatId; });
+  if (srcIdx < 0) { closeModal(); return; }
+  var srcKey = keys.splice(srcIdx, 1)[0];
+  var targetIdx = insertIdx > srcIdx ? insertIdx - 1 : insertIdx;
+  if (targetIdx > keys.length) targetIdx = keys.length;
+  keys.splice(targetIdx, 0, srcKey);
   var newCats = {};
   keys.forEach(function(k){ newCats[k] = plan.categories[k]; });
   plan.categories = newCats;
-  _dragSrcId = null;
+  S.modal = null;
   save(); render();
-}
-function dragEnd(e) {
-  e.currentTarget.classList.remove('dragging');
-  _dragSrcId = null;
 }
 
 function moveCat(catId, dir) {
