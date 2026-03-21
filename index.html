@@ -204,12 +204,22 @@ var S = {
 };
 
 var THEMES = {
-  blue:   {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa'},
-  green:  {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a'},
-  orange: {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840'},
-  red:    {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060'},
-  purple: {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8'},
+  blue:     {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa', cardBg:'#1a4a7a', cardSurface:'#0d3358', cardAccent:'#7ab8e8', cardSub:'#4a8ab8'},
+  green:    {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a', cardBg:'#1a4a32', cardSurface:'#0d3322', cardAccent:'#7ad5a8', cardSub:'#4a9a70'},
+  orange:   {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840', cardBg:'#7a3a08', cardSurface:'#562808', cardAccent:'#f6c06a', cardSub:'#c07830'},
+  red:      {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060', cardBg:'#7a1010', cardSurface:'#520a0a', cardAccent:'#f5a8a0', cardSub:'#c06060'},
+  purple:   {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8', cardBg:'#3a1478', cardSurface:'#280e52', cardAccent:'#c4b5fd', cardSub:'#8870d0'},
+  navy:     {accent:'#1e3a5f', accentBg:'#e0e8f4', accentBorder:'#8090b8', bg:'#eceef4', surface:'#ffffff', surface2:'#dde2ee', border:'#b0bcd8', border2:'#8090b8', text:'#080e1e', text2:'#1e2e4a', text3:'#5060808', cardBg:'#0e1e3a', cardSurface:'#080e22', cardAccent:'#8090c8', cardSub:'#405080'},
+  teal:     {accent:'#0d7c7c', accentBg:'#e0f5f5', accentBorder:'#70caca', bg:'#eef6f6', surface:'#ffffff', surface2:'#d8eeee', border:'#a0d8d8', border2:'#70baba', text:'#001e1e', text2:'#0a3838', text3:'#408080', cardBg:'#065050', cardSurface:'#033030', cardAccent:'#70caca', cardSub:'#309090'},
+  brown:    {accent:'#7c4a1e', accentBg:'#f5ede0', accentBorder:'#caa070', bg:'#f6f0ea', surface:'#ffffff', surface2:'#eeddd0', border:'#d8c0a0', border2:'#baa080', text:'#1e0e00', text2:'#3e2010', text3:'#907050', cardBg:'#4a2a0e', cardSurface:'#301808', cardAccent:'#caa070', cardSub:'#906040'},
+  pink:     {accent:'#be185d', accentBg:'#fce7f3', accentBorder:'#f9a8d4', bg:'#fdf2f8', surface:'#ffffff', surface2:'#fce7f3', border:'#f8b4d4', border2:'#f08ab0', text:'#1e0014', text2:'#5c1040', text3:'#b06080', cardBg:'#7a0e3c', cardSurface:'#520828', cardAccent:'#f9a8d4', cardSub:'#d06090'},
+  gray:     {accent:'#4a5568', accentBg:'#edf2f7', accentBorder:'#a0aec0', bg:'#f5f7fa', surface:'#ffffff', surface2:'#e8ecf2', border:'#c8d0dc', border2:'#a0aec0', text:'#1a202c', text2:'#2d3748', text3:'#718096', cardBg:'#2d3748', cardSurface:'#1a202c', cardAccent:'#a0aec0', cardSub:'#606878'},
+  yellow:   {accent:'#92740a', accentBg:'#fefce8', accentBorder:'#f0d060', bg:'#fefde8', surface:'#ffffff', surface2:'#fdf8d0', border:'#ece090', border2:'#d8c060', text:'#1e1800', text2:'#4a3c00', text3:'#908040', cardBg:'#5a4808', cardSurface:'#3a2e04', cardAccent:'#f0d060', cardSub:'#a08030'},
+  lime:     {accent:'#3a7c1e', accentBg:'#edfce0', accentBorder:'#90d870', bg:'#f0fce8', surface:'#ffffff', surface2:'#e0f8d0', border:'#b8e8a0', border2:'#90cc70', text:'#0a1e00', text2:'#204010', text3:'#608040', cardBg:'#284e10', cardSurface:'#183008', cardAccent:'#90d870', cardSub:'#60a040'},
+  skyblue:  {accent:'#0a7abf', accentBg:'#e0f4fc', accentBorder:'#70c0e8', bg:'#eef8fc', surface:'#ffffff', surface2:'#d8eef8', border:'#a0d4ec', border2:'#70b8de', text:'#001828', text2:'#0a3050', text3:'#4088b0', cardBg:'#054878', cardSurface:'#022e50', cardAccent:'#70c0e8', cardSub:'#3090c0'},
 };
+
+var THEME_ORDER = ['gray','navy','skyblue','blue','teal','lime','green','yellow','brown','orange','pink','red','purple'];
 
 function applyTheme(name) {
   var t = THEMES[name] || THEMES.blue;
@@ -324,8 +334,8 @@ function render() {
     h += '<button class="btn btn-sm" onclick="rstChk()">チェックをリセット</button></div></div>';
     h += '<div style="display:flex;flex-direction:column;gap:6px;margin-top:12px"><div class="toolbar-label">テーマカラー</div>';
     h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
-    var themeLabels = {blue:'ブルー', green:'グリーン', orange:'オレンジ', red:'レッド', purple:'パープル'};
-    Object.keys(THEMES).forEach(function(name) {
+    var themeLabels = {blue:'ブルー', green:'グリーン', orange:'オレンジ', red:'レッド', purple:'パープル', navy:'ネイビー', teal:'ティール', brown:'ブラウン', pink:'ピンク', gray:'グレー', yellow:'イエロー', lime:'黄緑', skyblue:'水色'};
+    THEME_ORDER.forEach(function(name) {
       var t = THEMES[name];
       var active = S.theme === name;
       h += '<button onclick="setTheme(\''+name+'\')" style="width:28px;height:28px;border-radius:50%;background:'+t.accent+';border:'+(active?'3px solid '+t.text:'2px solid transparent')+';cursor:pointer;outline:'+(active?'2px solid '+t.accentBorder:'none')+'" title="'+themeLabels[name]+'"></button>';
@@ -462,8 +472,9 @@ function renderModal() {
     var m4 = '<div class="modal-bg" onclick="closeModal()"><div class="modal" style="width:420px;max-width:100%" onclick="event.stopPropagation()">';
     m4 += '<h2>SNS用画像を保存</h2>';
     m4 += '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">プレビューを確認して「画像を保存」してください。</p>';
-    m4 += '<div id="shareCard" style="background:#1a4a7a;border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;">';
-    m4 += '<div style="font-size:10px;color:#7ab8e8;letter-spacing:0.12em;margin-bottom:5px;">GEAR LIST TODAY</div>';
+    var ct = THEMES[S.theme] || THEMES.blue;
+    m4 += '<div id="shareCard" style="background:'+ct.cardBg+';border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;">';
+    m4 += '<div style="font-size:10px;color:'+ct.cardAccent+';letter-spacing:0.12em;margin-bottom:5px;">GEAR LIST TODAY</div>';
     var snsGenre = esc(plan&&plan.genre?plan.genre:S.cur);
     var snsDest = esc(plan&&plan.dest?plan.dest:'');
     var snsStyle = esc(plan&&plan.style?plan.style:'');
@@ -472,13 +483,21 @@ function renderModal() {
     } else {
       m4 += '<div style="font-size:21px;font-weight:700;color:#fff;margin-bottom:2px;">'+snsGenre+'</div>';
     }
-    m4 += '<div style="font-size:18px;font-weight:600;color:#93c5e8;margin-bottom:16px;">'+snsStyle+'</div>';
+    m4 += '<div style="font-size:18px;font-weight:600;color:'+ct.cardAccent+';margin-bottom:16px;">'+snsStyle+'</div>';
     m4 += '<div style="display:flex;gap:10px;margin-bottom:16px;">';
-    m4 += '<div style="background:#0d3358;border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:#7ab8e8;margin-bottom:3px;">ベースウェイト</div><div style="font-size:20px;font-weight:700;color:#fff;">'+bwLabel+'</div><div style="font-size:10px;color:#4a8ab8;margin-top:2px;">総重量 '+twLabel+'</div></div>';
-    m4 += '<div style="background:#0d3358;border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:#7ab8e8;margin-bottom:3px;">装備数</div><div style="font-size:20px;font-weight:700;color:#fff;">'+tc+'<span style="font-size:11px;font-weight:400">点</span></div></div>';
+    m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:'+ct.cardAccent+';margin-bottom:3px;">ベースウェイト</div><div style="font-size:20px;font-weight:700;color:#fff;">'+bwLabel+'</div><div style="font-size:10px;color:'+ct.cardSub+';margin-top:2px;">総重量 '+twLabel+'</div></div>';
+    m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:'+ct.cardAccent+';margin-bottom:3px;">装備数</div><div style="font-size:20px;font-weight:700;color:#fff;">'+tc+'<span style="font-size:11px;font-weight:400">点</span></div></div>';
     m4 += '</div>';
-    m4 += '<div>'+cardRows+'</div>';
-    m4 += '<div style="font-size:10px;color:#4a8ab8;text-align:right;margin-top:12px;">Gear List Today by BlueNileGear</div>';
+    var cardRowsThemed = '';
+    catEntries.slice(0,5).forEach(function(e) {
+      var names = e.items.slice(0,3).map(function(i){ return i.name; }).join('、');
+      if (e.items.length > 3) names += ' 他';
+      cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:'+ct.cardSurface+';border-radius:6px;margin-bottom:5px;">';
+      cardRowsThemed += '<span style="font-size:12px;color:#e8f0f8;white-space:nowrap;margin-right:8px;">'+esc(e.cat)+'</span>';
+      cardRowsThemed += '<span style="font-size:11px;color:'+ct.cardAccent+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(names)+'</span></div>';
+    });
+    m4 += '<div>'+cardRowsThemed+'</div>';
+    m4 += '<div style="font-size:10px;color:'+ct.cardSub+';text-align:right;margin-top:12px;">Gear List Today by BlueNileGear</div>';
     m4 += '</div>';
     m4 += '<div class="modal-actions"><button class="btn" onclick="closeModal()">閉じる</button><button class="btn btn-accent" onclick="saveCardImage()">画像を保存</button></div>';
     m4 += '<div id="imgNote" style="font-size:12px;color:var(--accent);margin-top:6px;text-align:right;min-height:16px"></div>';
