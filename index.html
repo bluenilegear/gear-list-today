@@ -67,8 +67,9 @@ select.plan-select{border:1px solid var(--border2);border-radius:var(--radius);p
 .move-target-btn{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--border-radius-md,8px);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;text-align:left;font-family:inherit;}
 .move-target-btn:hover{background:var(--accent-bg);border-color:var(--accent-border);}
 .move-target-btn.current{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default;}
-.cat-grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(var(--cat-rows),auto);gap:12px;margin-bottom:1rem;align-items:start;}
-@media(max-width:640px){.cat-grid{grid-template-columns:1fr;grid-auto-flow:row;}}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;align-items:start;}
+.cat-col{display:flex;flex-direction:column;gap:12px;}
+@media(max-width:640px){.cat-grid{grid-template-columns:1fr;}}
 .col-headers{display:grid;grid-template-columns:3fr 42px 52px 44px 60px 36px 44px;gap:6px;padding:4px 12px;border-top:1px solid var(--border);background:var(--surface2);}
 .col-headers span{font-size:10px;color:var(--text2);letter-spacing:0.04em;font-weight:600;}
 .item-row{display:grid;grid-template-columns:3fr 42px 52px 44px 60px 36px 44px;gap:6px;align-items:center;padding:5px 12px;border-top:1px solid var(--border);transition:background 0.1s;}
@@ -123,7 +124,8 @@ input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--ac
   body{background:#fff;color:#000;}
   .no-print{display:none!important;}
   .container{max-width:100%;padding:0.5rem;}
-  .cat-grid{display:grid!important;grid-template-columns:1fr 1fr!important;grid-auto-flow:column!important;grid-template-rows:repeat(var(--cat-rows),auto)!important;gap:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cat-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cat-col{display:flex;flex-direction:column;gap:8px;}
   .section{border:1px solid #999;page-break-inside:avoid;margin-bottom:0;}
   .section-head{background:#c8daea!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid #7ab0de;}
   .section-title{color:#0a3a6a!important;}
@@ -298,57 +300,66 @@ function render() {
 
     var cats = Object.keys(plan.categories);
     var firstOpen = false;
-    var catRows = Math.ceil(cats.length / 2);
-    h += '<div class="cat-grid" style="--cat-rows:'+catRows+'">';
-    cats.forEach(function(cat, idx) {
+    var half = Math.ceil(cats.length / 2);
+    var leftCats = cats.slice(0, half);
+    var rightCats = cats.slice(half);
+
+    function renderCat(cat, idx) {
       var items = plan.categories[cat];
       var open = !S.collapsed[S.cur+'|'+cat];
       var cw = items.reduce(function(s,i){ return s+(i.weight||0)*(i.qty||1); }, 0);
       var showHdr = open && items.length > 0 && !firstOpen;
       if (showHdr) firstOpen = true;
       var catId = String(idx);
-
-      h += '<div class="section">';
-      h += '<div class="section-head">';
-      h += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
-      h += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
-      if (idx > 0) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',-1)" title="上へ">↑</button>';
-      if (idx < cats.length-1) h += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',1)" title="下へ">↓</button>';
-      h += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
-      h += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
-      h += '</span>';
-      h += '<span class="section-arrow'+(open?' open':'')+'" onclick="togCat(\''+catId+'\')" style="cursor:pointer;margin-left:6px">&#9654;</span></div>';
-
+      var ch = '<div class="section">';
+      ch += '<div class="section-head">';
+      ch += '<span class="section-title" onclick="togCat(\''+catId+'\')" style="flex:1;cursor:pointer">'+esc(cat)+'<span class="section-badge">  '+items.length+'点 &middot; '+fw(cw)+'</span></span>';
+      ch += '<span style="display:flex;align-items:center;gap:4px" class="no-print">';
+      if (idx > 0) ch += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',-1)" title="上へ">↑</button>';
+      if (idx < cats.length-1) ch += '<button class="btn btn-sm" style="padding:2px 7px" onclick="moveCat(\''+catId+'\',1)" title="下へ">↓</button>';
+      ch += '<button class="btn btn-sm" onclick="showRenameCat(\''+catId+'\')" title="名前を変更">編集</button>';
+      ch += '<button class="btn btn-sm btn-danger" onclick="deleteCat(\''+catId+'\')" title="カテゴリを削除">削除</button>';
+      ch += '</span>';
+      ch += '<span class="section-arrow'+(open?' open':'')+'" onclick="togCat(\''+catId+'\')" style="cursor:pointer;margin-left:6px">&#9654;</span></div>';
       if (open) {
         if (!items.length) {
-          h += '<div class="empty-cat">装備なし</div>';
+          ch += '<div class="empty-cat">装備なし</div>';
         } else {
           if (showHdr) {
-            h += '<div class="col-headers"><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span style="text-align:center">BW</span></div>';
+            ch += '<div class="col-headers"><span>装備名</span><span style="text-align:center">数量</span><span style="text-align:center">重量(g)</span><span style="text-align:center">BW</span></div>';
           }
           items.forEach(function(item, itemIdx) {
             var excluded = item.excluded ? true : false;
             var bwOn = item.bwExcl ? true : false;
-            h += '<div class="item-row'+(excluded?' excluded':'')+'">';
-            h += '<div style="display:flex;align-items:center;gap:4px">';
-            h += '<input type="checkbox" class="print-checkbox"'+(item.checked?' checked':'')+' style="width:13px;height:13px;accent-color:var(--accent)" onchange="togChk(\''+catId+'\','+item.id+')">';
-            h += '<input type="text" class="memo-input" value="'+esc(item.name)+'" style="flex:1;'+(excluded?'text-decoration:line-through;color:var(--text3);':item.checked?'text-decoration:line-through;color:var(--text3);':'')+'" onchange="updItem(\''+catId+'\','+item.id+',\'name\',this.value)" title="'+esc(item.memo||'')+'"></div>';
-            h += '<input type="number" class="num-input" value="'+(item.qty||1)+'" min="1" onchange="updItem(\''+catId+'\','+item.id+',\'qty\',this.value)">';
-            h += '<input type="number" class="num-input" value="'+(item.weight||'')+'" placeholder="&mdash;" min="0" onchange="updItem(\''+catId+'\','+item.id+',\'weight\',this.value)">';
-            h += '<div style="text-align:center"><input type="checkbox"'+(bwOn?' checked':'')+' style="width:13px;height:13px;accent-color:var(--warn);cursor:pointer" title="BW除外" onchange="togBW(\''+catId+'\','+item.id+')"></div>';
-            h += '<button class="toggle-btn '+(excluded?'inactive':'active')+' no-print" onclick="togExclude(\''+catId+'\','+item.id+')">'+(excluded?'除外':'使う')+'</button>';
-            h += '<div class="no-print" style="display:flex;flex-direction:column;gap:1px">';
-            if (itemIdx > 0) h += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',-1)">↑</button>';
-            if (itemIdx < items.length-1) h += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',1)">↓</button>';
-            h += '</div>';
-            h += '<button class="btn btn-danger btn-sm no-print" onclick="delItem(\''+catId+'\','+item.id+')">削除</button>';
-            h += '</div>';
+            ch += '<div class="item-row'+(excluded?' excluded':'')+'">';
+            ch += '<div style="display:flex;align-items:center;gap:4px">';
+            ch += '<input type="checkbox" class="print-checkbox"'+(item.checked?' checked':'')+' style="width:13px;height:13px;accent-color:var(--accent)" onchange="togChk(\''+catId+'\','+item.id+')">';
+            ch += '<input type="text" class="memo-input" value="'+esc(item.name)+'" style="flex:1;'+(excluded?'text-decoration:line-through;color:var(--text3);':item.checked?'text-decoration:line-through;color:var(--text3);':'')+'" onchange="updItem(\''+catId+'\','+item.id+',\'name\',this.value)" title="'+esc(item.memo||'')+'"></div>';
+            ch += '<input type="number" class="num-input" value="'+(item.qty||1)+'" min="1" onchange="updItem(\''+catId+'\','+item.id+',\'qty\',this.value)">';
+            ch += '<input type="number" class="num-input" value="'+(item.weight||'')+'" placeholder="&mdash;" min="0" onchange="updItem(\''+catId+'\','+item.id+',\'weight\',this.value)">';
+            ch += '<div style="text-align:center"><input type="checkbox"'+(bwOn?' checked':'')+' style="width:13px;height:13px;accent-color:var(--warn);cursor:pointer" title="BW除外" onchange="togBW(\''+catId+'\','+item.id+')"></div>';
+            ch += '<button class="toggle-btn '+(excluded?'inactive':'active')+' no-print" onclick="togExclude(\''+catId+'\','+item.id+')">'+(excluded?'除外':'使う')+'</button>';
+            ch += '<div class="no-print" style="display:flex;flex-direction:column;gap:1px">';
+            if (itemIdx > 0) ch += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',-1)">↑</button>';
+            if (itemIdx < items.length-1) ch += '<button class="btn btn-sm" style="padding:0px 5px;font-size:10px" onclick="moveItem(\''+catId+'\','+item.id+',1)">↓</button>';
+            ch += '</div>';
+            ch += '<button class="btn btn-danger btn-sm no-print" onclick="delItem(\''+catId+'\','+item.id+')">削除</button>';
+            ch += '</div>';
           });
         }
-        h += '<div class="add-row no-print"><input type="text" placeholder="装備名を入力してEnterで追加" id="add_'+catId+'" onkeydown="if(event.key===\'Enter\')addItem(\''+catId+'\')"><button class="btn btn-sm" onclick="addItem(\''+catId+'\')">追加</button></div>';
+        ch += '<div class="add-row no-print"><input type="text" placeholder="装備名を入力してEnterで追加" id="add_'+catId+'" onkeydown="if(event.key===\'Enter\')addItem(\''+catId+'\')"><button class="btn btn-sm" onclick="addItem(\''+catId+'\')">追加</button></div>';
       }
-      h += '</div>';
-    });
+      ch += '</div>';
+      return ch;
+    }
+
+    h += '<div class="cat-grid">';
+    h += '<div class="cat-col">';
+    leftCats.forEach(function(cat){ h += renderCat(cat, cats.indexOf(cat)); });
+    h += '</div>';
+    h += '<div class="cat-col">';
+    rightCats.forEach(function(cat){ h += renderCat(cat, cats.indexOf(cat)); });
+    h += '</div>';
     h += '</div>';
 
     h += '<div class="toolbar no-print"><div style="display:flex;flex-direction:column;gap:6px"><div class="toolbar-label">管理</div>';
@@ -624,12 +635,15 @@ function saveBlogImage() {
   var noPrints = clone.querySelectorAll('.no-print');
   noPrints.forEach(function(el){ el.remove(); });
   var catGrids = clone.querySelectorAll('.cat-grid');
-  var catRows = Math.ceil(Object.keys(S.plans[S.cur].categories).length / 2);
   catGrids.forEach(function(el){
     el.style.display='grid';
     el.style.gridTemplateColumns='1fr 1fr';
-    el.style.gridAutoFlow='column';
-    el.style.gridTemplateRows='repeat('+catRows+',auto)';
+    el.style.gap='8px';
+  });
+  var catCols = clone.querySelectorAll('.cat-col');
+  catCols.forEach(function(el){
+    el.style.display='flex';
+    el.style.flexDirection='column';
     el.style.gap='8px';
   });
   var excludedRows = clone.querySelectorAll('.item-row.excluded');
