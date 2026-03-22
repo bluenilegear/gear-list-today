@@ -214,6 +214,7 @@ var S = {
   destinations: ini ? (ini.destinations || []) : [],
   theme: ini ? (ini.theme || 'blue') : 'blue',
   collapsed: {}, modal: null, mStep: 1, mGenre: '', mStyle: '', mDest: '', mName: '',
+  snsIcons: [], snsItems: null, snsStep: 1,
   nextId: ini ? (ini.nextId || 300) : 300,
   notice: ''
 };
@@ -508,59 +509,118 @@ function renderModal() {
     var plan = S.plans[S.cur];
     var tw2 = plan ? gw(plan) : 0;
     var bw2 = plan ? gbw(plan) : 0;
-    var tc = 0;
-    var catEntries = [];
-    if (plan) {
-      Object.keys(plan.categories).forEach(function(cat) {
-        var items = plan.categories[cat];
-        tc += items.length;
-        if (items.length > 0) catEntries.push({cat:cat, items:items});
-      });
-    }
-    var bwLabel = bw2 >= 1000 ? (bw2/1000).toFixed(1)+'kg' : bw2+'g';
-    var twLabel = tw2 >= 1000 ? (tw2/1000).toFixed(1)+'kg' : tw2+'g';
-    var cardRows = '';
-    catEntries.slice(0,5).forEach(function(e) {
-      var names = e.items.slice(0,3).map(function(i){ return i.name; }).join('、');
-      if (e.items.length > 3) names += ' 他';
-      cardRows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#0d3358;border-radius:6px;margin-bottom:5px;">';
-      cardRows += '<span style="font-size:12px;color:#cce0f4;white-space:nowrap;margin-right:8px;">'+esc(e.cat)+'</span>';
-      cardRows += '<span style="font-size:11px;color:#7ab8e8;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(names)+'</span></div>';
-    });
-    var m4 = '<div class="modal-bg" onclick="closeModal()"><div class="modal" style="width:420px;max-width:100%" onclick="event.stopPropagation()">';
-    m4 += '<h2>SNS用画像を保存</h2>';
-    m4 += '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">プレビューを確認して「画像を保存」してください。</p>';
     var ct = THEMES[S.theme] || THEMES.blue;
-    m4 += '<div id="shareCard" style="background:'+ct.cardBg+';border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;">';
-    m4 += '<div style="font-size:10px;color:'+ct.cardAccent+';letter-spacing:0.12em;margin-bottom:5px;">GEAR LIST TODAY</div>';
-    var snsGenre = esc(plan&&plan.genre?plan.genre:S.cur);
-    var snsDest = esc(plan&&plan.dest?plan.dest:'');
-    var snsStyle = esc(plan&&plan.style?plan.style:'');
-    if (snsDest) {
-      m4 += '<div style="font-size:21px;font-weight:700;color:#fff;margin-bottom:2px;">'+snsDest+'&nbsp;'+snsGenre+'</div>';
+    var SNS_ICONS = ['🏔️','🌊','🛶','🚵','🏕️','⛺','🌲','👨‍👧','🏊','🌏','🔥','🍩','☕️','🚃','🏝','⛰'];
+    var SNS_ICON_LABELS = {'🏔️':'山','🌊':'波','🛶':'カヌー','🚵':'自転車','🏕️':'キャンプ','⛺':'テント','🌲':'森','👨‍👧':'親子','🏊':'川・水泳','🌏':'地球','🔥':'焚火','🍩':'スイーツ','☕️':'コーヒー','🚃':'電車','🏝':'島','⛰':'峰'};
+
+    if (S.snsStep === 1) {
+      var allCats = plan ? Object.keys(plan.categories).filter(function(cat){
+        return plan.categories[cat].some(function(i){ return !i.excluded; });
+      }) : [];
+
+      if (!S.snsRows) S.snsRows = [{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}];
+
+      var ms = '<div class="modal-bg" onclick="closeModal()"><div class="modal" style="width:460px;max-width:100%;max-height:88vh;overflow-y:auto" onclick="event.stopPropagation()">';
+      ms += '<h2>SNS用画像の設定</h2>';
+
+      ms += '<div class="modal-label" style="margin-bottom:8px">アイコンを3つまで選んでください</div>';
+      ms += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">';
+      SNS_ICONS.forEach(function(ic) {
+        var sel = S.snsIcons.indexOf(ic) >= 0;
+        ms += '<button onclick="toggleSnsIcon(\''+ic+'\')" style="font-size:20px;padding:5px 8px;border-radius:8px;border:2px solid '+(sel?ct.accent:ct.border2)+';background:'+(sel?ct.accentBg:'transparent')+';cursor:pointer" title="'+SNS_ICON_LABELS[ic]+'">'+ic+'</button>';
+      });
+      ms += '</div>';
+      if (S.snsIcons.length > 0) {
+        ms += '<div style="font-size:12px;color:var(--text3);margin-bottom:12px">選択中: ';
+        S.snsIcons.forEach(function(ic,i){
+          ms += '<span style="font-size:18px;margin-right:4px">'+ic+'</span>';
+          if (i < S.snsIcons.length-1) ms += '<button onclick="swapSnsIcon('+i+')" style="font-size:10px;padding:1px 4px;border:1px solid var(--border2);border-radius:4px;cursor:pointer;background:transparent">⇄</button> ';
+        });
+        ms += '</div>';
+      }
+
+      ms += '<div class="modal-label" style="margin-bottom:8px">4段のカテゴリと主要アイテムを選んでください（各段2つまで）</div>';
+      for (var ri=0; ri<4; ri++) {
+        var row = S.snsRows[ri];
+        ms += '<div style="border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;">';
+        ms += '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">段 '+(ri+1)+'</div>';
+        ms += '<select onchange="setSnsRowCat('+ri+',this.value)" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:13px;color:var(--text);background:var(--surface);font-family:inherit;margin-bottom:8px">';
+        ms += '<option value="">（カテゴリを選択）</option>';
+        allCats.forEach(function(cat) {
+          ms += '<option value="'+esc(cat)+'"'+(row.cat===cat?' selected':'')+'>'+esc(cat)+'</option>';
+        });
+        ms += '</select>';
+        if (row.cat && plan && plan.categories[row.cat]) {
+          var catItems = plan.categories[row.cat].filter(function(i){ return !i.excluded; });
+          ms += '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+          catItems.forEach(function(item) {
+            var sel = row.items.indexOf(item.id) >= 0;
+            ms += '<button onclick="toggleSnsRowItem('+ri+','+item.id+')" style="font-size:12px;padding:4px 10px;border-radius:16px;border:1px solid '+(sel?ct.accent:ct.border2)+';background:'+(sel?ct.accentBg:'transparent')+';color:'+(sel?ct.accent:'var(--text)')+';cursor:pointer;font-family:inherit">'+esc(item.name)+'</button>';
+          });
+          ms += '</div>';
+        }
+        ms += '</div>';
+      }
+
+      ms += '<div class="modal-actions"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-accent" onclick="goSnsStep(2)">プレビュー →</button></div>';
+      ms += '</div></div>';
+      app.innerHTML += ms;
+
     } else {
-      m4 += '<div style="font-size:21px;font-weight:700;color:#fff;margin-bottom:2px;">'+snsGenre+'</div>';
+      // --- ステップ2: カードプレビュー ---
+      var bwLabel = bw2 >= 1000 ? (bw2/1000).toFixed(1)+'kg' : bw2+'g';
+      var twLabel = tw2 >= 1000 ? (tw2/1000).toFixed(1)+'kg' : tw2+'g';
+      var tc = 0;
+      if (plan) Object.keys(plan.categories).forEach(function(cat){ plan.categories[cat].forEach(function(i){ if(!i.excluded) tc++; }); });
+
+      var iconStr = S.snsIcons.length > 0 ? S.snsIcons.join(' ') + ' ' : '';
+      var snsGenre = esc(plan&&plan.genre?plan.genre:S.cur);
+      var snsDest = esc(plan&&plan.dest?plan.dest:'');
+      var snsStyle = esc(plan&&plan.style?plan.style:'');
+
+      var m4 = '<div class="modal-bg" onclick="closeModal()"><div class="modal" style="width:420px;max-width:100%" onclick="event.stopPropagation()">';
+      m4 += '<h2>SNS用画像を保存</h2>';
+      m4 += '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">プレビューを確認して「画像を保存」してください。</p>';
+      m4 += '<div id="shareCard" style="background:'+ct.cardBg+';border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;width:360px;height:360px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">';
+      m4 += '<div>';
+      if (snsDest) {
+        m4 += '<div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsDest+'&nbsp;'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
+      } else {
+        m4 += '<div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
+      }
+      m4 += '<div style="font-size:15px;font-weight:600;color:'+ct.cardAccent+';margin-bottom:12px;">'+snsStyle+'</div>';
+      m4 += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
+      m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:8px 12px;flex:1;text-align:center;"><div style="font-size:9px;color:'+ct.cardAccent+';margin-bottom:2px;">ベースウェイト</div><div style="font-size:18px;font-weight:700;color:#fff;">'+bwLabel+'</div><div style="font-size:9px;color:'+ct.cardSub+';margin-top:1px;">総重量 '+twLabel+'</div></div>';
+      m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:8px 12px;flex:1;text-align:center;"><div style="font-size:9px;color:'+ct.cardAccent+';margin-bottom:2px;">装備数</div><div style="font-size:18px;font-weight:700;color:#fff;">'+tc+'<span style="font-size:10px;font-weight:400">点</span></div></div>';
+      m4 += '</div>';
+      var rows = S.snsRows || [];
+      var cardRowsThemed = '';
+      rows.forEach(function(row) {
+        if (!row.cat) return;
+        var itemNames = [];
+        if (plan && plan.categories[row.cat] && row.items.length > 0) {
+          row.items.forEach(function(id) {
+            var found = plan.categories[row.cat].find(function(i){ return i.id===id && !i.excluded; });
+            if (found) itemNames.push(found.name);
+          });
+        }
+        var nameStr = itemNames.length > 0 ? itemNames.join('、') : '';
+        cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:'+ct.cardSurface+';border-radius:6px;margin-bottom:4px;">';
+        cardRowsThemed += '<span style="font-size:11px;color:#e8f0f8;white-space:nowrap;margin-right:8px;font-weight:500;">'+esc(row.cat)+'</span>';
+        cardRowsThemed += '<span style="font-size:10px;color:'+ct.cardAccent+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(nameStr)+'</span></div>';
+      });
+      if (cardRowsThemed) {
+        m4 += '<div style="font-size:9px;color:'+ct.cardAccent+';letter-spacing:0.08em;margin-bottom:5px;">主要アイテム</div>';
+        m4 += '<div>'+cardRowsThemed+'</div>';
+      }
+      m4 += '<div style="font-size:9px;color:'+ct.cardSub+';text-align:right;margin-top:8px;">Gear List Today by BlueNileGear</div>';
+      m4 += '</div>';
+      m4 += '</div>';
+      m4 += '<div class="modal-actions"><button class="btn" onclick="goSnsStep(1)">← 戻る</button><button class="btn btn-accent" onclick="saveCardImage()">画像を保存</button></div>';
+      m4 += '<div id="imgNote" style="font-size:12px;color:var(--accent);margin-top:6px;text-align:right;min-height:16px"></div>';
+      m4 += '</div></div>';
+      app.innerHTML += m4;
     }
-    m4 += '<div style="font-size:18px;font-weight:600;color:'+ct.cardAccent+';margin-bottom:16px;">'+snsStyle+'</div>';
-    m4 += '<div style="display:flex;gap:10px;margin-bottom:16px;">';
-    m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:'+ct.cardAccent+';margin-bottom:3px;">ベースウェイト</div><div style="font-size:20px;font-weight:700;color:#fff;">'+bwLabel+'</div><div style="font-size:10px;color:'+ct.cardSub+';margin-top:2px;">総重量 '+twLabel+'</div></div>';
-    m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:10px 14px;flex:1;text-align:center;"><div style="font-size:10px;color:'+ct.cardAccent+';margin-bottom:3px;">装備数</div><div style="font-size:20px;font-weight:700;color:#fff;">'+tc+'<span style="font-size:11px;font-weight:400">点</span></div></div>';
-    m4 += '</div>';
-    var cardRowsThemed = '';
-    catEntries.slice(0,5).forEach(function(e) {
-      var names = e.items.slice(0,3).map(function(i){ return i.name; }).join('、');
-      if (e.items.length > 3) names += ' 他';
-      cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:'+ct.cardSurface+';border-radius:6px;margin-bottom:5px;">';
-      cardRowsThemed += '<span style="font-size:12px;color:#e8f0f8;white-space:nowrap;margin-right:8px;">'+esc(e.cat)+'</span>';
-      cardRowsThemed += '<span style="font-size:11px;color:'+ct.cardAccent+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(names)+'</span></div>';
-    });
-    m4 += '<div>'+cardRowsThemed+'</div>';
-    m4 += '<div style="font-size:10px;color:'+ct.cardSub+';text-align:right;margin-top:12px;">Gear List Today by BlueNileGear</div>';
-    m4 += '</div>';
-    m4 += '<div class="modal-actions"><button class="btn" onclick="closeModal()">閉じる</button><button class="btn btn-accent" onclick="saveCardImage()">画像を保存</button></div>';
-    m4 += '<div id="imgNote" style="font-size:12px;color:var(--accent);margin-top:6px;text-align:right;min-height:16px"></div>';
-    m4 += '</div></div>';
-    app.innerHTML += m4;
   }
 
   if (S.modal === 'markdown') {
@@ -684,7 +744,43 @@ function printPlan() {
 }
 
 function openNew() { S.modal='newPlan'; S.mStep=1; S.mGenre=''; S.mStyle=''; S.mDest=''; S.mName=''; S.notice=''; render(); }
-function showModal(n) { S.notice=''; S.modal=n; render(); }
+function showModal(n) {
+  S.notice='';
+  S.modal=n;
+  if (n==='sns') { S.snsStep=1; S.snsIcons=[]; S.snsItems={}; S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}]; }
+  render();
+}
+function setSnsRowCat(ri, cat) {
+  if (!S.snsRows) S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}];
+  S.snsRows[ri] = {cat:cat, items:[]};
+  render();
+}
+function toggleSnsRowItem(ri, id) {
+  if (!S.snsRows) return;
+  var row = S.snsRows[ri];
+  var idx = row.items.indexOf(id);
+  if (idx >= 0) { row.items.splice(idx,1); }
+  else if (row.items.length < 2) { row.items.push(id); }
+  render();
+}
+function goSnsStep(n) { S.snsStep=n; render(); }
+function toggleSnsIcon(ic) {
+  var idx = S.snsIcons.indexOf(ic);
+  if (idx >= 0) { S.snsIcons.splice(idx,1); }
+  else if (S.snsIcons.length < 3) { S.snsIcons.push(ic); }
+  render();
+}
+function swapSnsIcon(i) {
+  if (i < S.snsIcons.length-1) {
+    var tmp = S.snsIcons[i]; S.snsIcons[i]=S.snsIcons[i+1]; S.snsIcons[i+1]=tmp;
+  }
+  render();
+}
+function toggleSnsItem(key) {
+  if (!S.snsItems) S.snsItems={};
+  S.snsItems[key] = !S.snsItems[key];
+  render();
+}
 function closeModal() { S.modal=null; render(); }
 function goStep(n) { S.mStep=n; render(); }
 function selGenre(g) { S.mGenre=g; S.mName=''; render(); }
