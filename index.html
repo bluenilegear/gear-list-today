@@ -30,7 +30,7 @@
   --danger:#e05a4a;--danger-bg:#2a1a18;--warn:#d4a030;--warn-bg:#2a2010;
 }}
 body{background:var(--bg);color:var(--text);font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
-.container{max-width:900px;margin:0 auto;padding:1.5rem 1rem;}
+.container{max-width:1400px;margin:0 auto;padding:1.5rem 1rem;}
 .header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:2rem;flex-wrap:wrap;}
 .header-left h1{font-size:20px;font-weight:600;letter-spacing:0.02em;color:var(--text);}
 .header-left p{font-size:12px;color:var(--text3);margin-top:2px;}
@@ -220,19 +220,32 @@ var S = {
 };
 
 var THEMES = {
-  blue:     {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa', cardBg:'#1a4a7a', cardSurface:'#0d3358', cardAccent:'#7ab8e8', cardSub:'#4a8ab8', iconColor:'#1a5fa8'},
-  green:    {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a', cardBg:'#1a4a32', cardSurface:'#0d3322', cardAccent:'#7ad5a8', cardSub:'#4a9a70', iconColor:'#2d6a4f'},
-  orange:   {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840', cardBg:'#7a3a08', cardSurface:'#562808', cardAccent:'#f6c06a', cardSub:'#c07830', iconColor:'#f97316'},
-  red:      {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060', cardBg:'#7a1010', cardSurface:'#520a0a', cardAccent:'#f5a8a0', cardSub:'#c06060', iconColor:'#ef4444'},
-  purple:   {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8', cardBg:'#3a1478', cardSurface:'#280e52', cardAccent:'#c4b5fd', cardSub:'#8870d0', iconColor:'#5b21b6'},
-  navy:     {accent:'#1e3a5f', accentBg:'#e0e8f4', accentBorder:'#8090b8', bg:'#eceef4', surface:'#ffffff', surface2:'#dde2ee', border:'#b0bcd8', border2:'#8090b8', text:'#080e1e', text2:'#1e2e4a', text3:'#506080', cardBg:'#0e1e3a', cardSurface:'#080e22', cardAccent:'#8090c8', cardSub:'#405080', iconColor:'#1e3a5f'},
-  teal:     {accent:'#0d7c7c', accentBg:'#e0f5f5', accentBorder:'#70caca', bg:'#eef6f6', surface:'#ffffff', surface2:'#d8eeee', border:'#a0d8d8', border2:'#70baba', text:'#001e1e', text2:'#0a3838', text3:'#408080', cardBg:'#065050', cardSurface:'#033030', cardAccent:'#70caca', cardSub:'#309090', iconColor:'#0d7c7c'},
-  brown:    {accent:'#7c4a1e', accentBg:'#f5ede0', accentBorder:'#caa070', bg:'#f6f0ea', surface:'#ffffff', surface2:'#eeddd0', border:'#d8c0a0', border2:'#baa080', text:'#1e0e00', text2:'#3e2010', text3:'#907050', cardBg:'#4a2a0e', cardSurface:'#301808', cardAccent:'#caa070', cardSub:'#906040', iconColor:'#7c4a1e'},
-  pink:     {accent:'#be185d', accentBg:'#fce7f3', accentBorder:'#f9a8d4', bg:'#fdf2f8', surface:'#ffffff', surface2:'#fce7f3', border:'#f8b4d4', border2:'#f08ab0', text:'#1e0014', text2:'#5c1040', text3:'#b06080', cardBg:'#7a0e3c', cardSurface:'#520828', cardAccent:'#f9a8d4', cardSub:'#d06090', iconColor:'#f472b6'},
-  gray:     {accent:'#4a5568', accentBg:'#edf2f7', accentBorder:'#a0aec0', bg:'#f5f7fa', surface:'#ffffff', surface2:'#e8ecf2', border:'#c8d0dc', border2:'#a0aec0', text:'#1a202c', text2:'#2d3748', text3:'#718096', cardBg:'#2d3748', cardSurface:'#1a202c', cardAccent:'#a0aec0', cardSub:'#606878', iconColor:'#4a5568'},
-  yellow:   {accent:'#7a6200', accentBg:'#fefce8', accentBorder:'#e8d020', bg:'#fefce0', surface:'#ffffff', surface2:'#faf8c0', border:'#e8e080', border2:'#d0c840', text:'#1a1600', text2:'#3a3400', text3:'#807020', cardBg:'#4a3c00', cardSurface:'#302600', cardAccent:'#e8d020', cardSub:'#a09010', iconColor:'#f5e020'},
-  lime:     {accent:'#3a7c1e', accentBg:'#edfce0', accentBorder:'#90d870', bg:'#f0fce8', surface:'#ffffff', surface2:'#e0f8d0', border:'#b8e8a0', border2:'#90cc70', text:'#0a1e00', text2:'#204010', text3:'#608040', cardBg:'#284e10', cardSurface:'#183008', cardAccent:'#90d870', cardSub:'#60a040', iconColor:'#5dcc2a'},
-  skyblue:  {accent:'#0a7abf', accentBg:'#e0f4fc', accentBorder:'#70c0e8', bg:'#eef8fc', surface:'#ffffff', surface2:'#d8eef8', border:'#a0d4ec', border2:'#70b8de', text:'#001828', text2:'#0a3050', text3:'#4088b0', cardBg:'#054878', cardSurface:'#022e50', cardAccent:'#70c0e8', cardSub:'#3090c0', iconColor:'#29b6f6'},
+  blue:     {accent:'#1a5fa8', accentBg:'#ddeaf8', accentBorder:'#7ab0de', bg:'#f0f4f8', surface:'#ffffff', surface2:'#e4edf5', border:'#c5d5e8', border2:'#9ab5d0', text:'#0f1e2e', text2:'#2c4a66', text3:'#6a8faa', cardBg:'#1a4a7a', cardSurface:'#0d3358', cardAccent:'#7ab8e8', cardSub:'#4a8ab8', iconColor:'#1a5fa8',
+    snsBg:'#f0f9ff', snsTitle:'#0a2a4a', snsAccent:'#0077cc', snsSub:'#4499cc', snsBorder:'#0077cc', snsItemBg:'#ddeeff', snsItemText:'#003366'},
+  green:    {accent:'#2d6a4f', accentBg:'#e8f4ee', accentBorder:'#a8d5b8', bg:'#f0f7f3', surface:'#ffffff', surface2:'#e4f0ea', border:'#b8d8c4', border2:'#8abda0', text:'#0a1f14', text2:'#1e4a30', text3:'#5a8a6a', cardBg:'#1a4a32', cardSurface:'#0d3322', cardAccent:'#7ad5a8', cardSub:'#4a9a70', iconColor:'#2d6a4f',
+    snsBg:'#f0faf4', snsTitle:'#0a2a16', snsAccent:'#1a7a4a', snsSub:'#4a9a6a', snsBorder:'#1a7a4a', snsItemBg:'#d4f0e0', snsItemText:'#0a3320'},
+  orange:   {accent:'#b45309', accentBg:'#fef3e2', accentBorder:'#f6c06a', bg:'#fdf6ee', surface:'#ffffff', surface2:'#faecd8', border:'#f0d4a0', border2:'#e0b870', text:'#1e0f00', text2:'#5c3010', text3:'#a07840', cardBg:'#7a3a08', cardSurface:'#562808', cardAccent:'#f6c06a', cardSub:'#c07830', iconColor:'#f97316',
+    snsBg:'#fffaf0', snsTitle:'#2a1000', snsAccent:'#c06010', snsSub:'#e08030', snsBorder:'#e07820', snsItemBg:'#fde8c0', snsItemText:'#5a2800'},
+  red:      {accent:'#9b1c1c', accentBg:'#fdf0ee', accentBorder:'#f5a8a0', bg:'#fdf2f2', surface:'#ffffff', surface2:'#fce8e8', border:'#f0c0c0', border2:'#e09090', text:'#1a0808', text2:'#5c1a1a', text3:'#a06060', cardBg:'#7a1010', cardSurface:'#520a0a', cardAccent:'#f5a8a0', cardSub:'#c06060', iconColor:'#ef4444',
+    snsBg:'#fff5f5', snsTitle:'#2a0808', snsAccent:'#cc2020', snsSub:'#dd5050', snsBorder:'#cc2020', snsItemBg:'#fdd8d8', snsItemText:'#5a1010'},
+  purple:   {accent:'#5b21b6', accentBg:'#ede9fe', accentBorder:'#c4b5fd', bg:'#f5f3ff', surface:'#ffffff', surface2:'#ede9fe', border:'#d0c8f8', border2:'#b0a0f0', text:'#1a0a2e', text2:'#3b1a6a', text3:'#7a60a8', cardBg:'#3a1478', cardSurface:'#280e52', cardAccent:'#c4b5fd', cardSub:'#8870d0', iconColor:'#5b21b6',
+    snsBg:'#f8f5ff', snsTitle:'#1a0838', snsAccent:'#6030cc', snsSub:'#9060d8', snsBorder:'#6030cc', snsItemBg:'#e8e0ff', snsItemText:'#2a0860'},
+  navy:     {accent:'#1e3a5f', accentBg:'#e0e8f4', accentBorder:'#8090b8', bg:'#eceef4', surface:'#ffffff', surface2:'#dde2ee', border:'#b0bcd8', border2:'#8090b8', text:'#080e1e', text2:'#1e2e4a', text3:'#506080', cardBg:'#0e1e3a', cardSurface:'#080e22', cardAccent:'#8090c8', cardSub:'#405080', iconColor:'#1e3a5f',
+    snsBg:'#f0f2f8', snsTitle:'#080e28', snsAccent:'#1e3a7a', snsSub:'#4060a0', snsBorder:'#1e3a7a', snsItemBg:'#d8dff0', snsItemText:'#080e38'},
+  teal:     {accent:'#0d7c7c', accentBg:'#e0f5f5', accentBorder:'#70caca', bg:'#eef6f6', surface:'#ffffff', surface2:'#d8eeee', border:'#a0d8d8', border2:'#70baba', text:'#001e1e', text2:'#0a3838', text3:'#408080', cardBg:'#065050', cardSurface:'#033030', cardAccent:'#70caca', cardSub:'#309090', iconColor:'#0d7c7c',
+    snsBg:'#f0fafa', snsTitle:'#001e1e', snsAccent:'#0a8a8a', snsSub:'#40aaaa', snsBorder:'#0a8a8a', snsItemBg:'#c8eeee', snsItemText:'#003838'},
+  brown:    {accent:'#7c4a1e', accentBg:'#f5ede0', accentBorder:'#caa070', bg:'#f6f0ea', surface:'#ffffff', surface2:'#eeddd0', border:'#d8c0a0', border2:'#baa080', text:'#1e0e00', text2:'#3e2010', text3:'#907050', cardBg:'#4a2a0e', cardSurface:'#301808', cardAccent:'#caa070', cardSub:'#906040', iconColor:'#7c4a1e',
+    snsBg:'#fdf6ee', snsTitle:'#1e0e00', snsAccent:'#8a5020', snsSub:'#b07840', snsBorder:'#8a5020', snsItemBg:'#eeddd0', snsItemText:'#3e1e00'},
+  pink:     {accent:'#be185d', accentBg:'#fce7f3', accentBorder:'#f9a8d4', bg:'#fdf2f8', surface:'#ffffff', surface2:'#fce7f3', border:'#f8b4d4', border2:'#f08ab0', text:'#1e0014', text2:'#5c1040', text3:'#b06080', cardBg:'#7a0e3c', cardSurface:'#520828', cardAccent:'#f9a8d4', cardSub:'#d06090', iconColor:'#f472b6',
+    snsBg:'#fff0f8', snsTitle:'#280014', snsAccent:'#cc1060', snsSub:'#e050a0', snsBorder:'#cc1060', snsItemBg:'#fdd0e8', snsItemText:'#5a0030'},
+  gray:     {accent:'#4a5568', accentBg:'#edf2f7', accentBorder:'#a0aec0', bg:'#f5f7fa', surface:'#ffffff', surface2:'#e8ecf2', border:'#c8d0dc', border2:'#a0aec0', text:'#1a202c', text2:'#2d3748', text3:'#718096', cardBg:'#2d3748', cardSurface:'#1a202c', cardAccent:'#a0aec0', cardSub:'#606878', iconColor:'#4a5568',
+    snsBg:'#f7f8fa', snsTitle:'#1a202c', snsAccent:'#4a5568', snsSub:'#718096', snsBorder:'#4a5568', snsItemBg:'#e2e8f0', snsItemText:'#1a202c'},
+  yellow:   {accent:'#7a6200', accentBg:'#fefce8', accentBorder:'#e8d020', bg:'#fefce0', surface:'#ffffff', surface2:'#faf8c0', border:'#e8e080', border2:'#d0c840', text:'#1a1600', text2:'#3a3400', text3:'#807020', cardBg:'#4a3c00', cardSurface:'#302600', cardAccent:'#e8d020', cardSub:'#a09010', iconColor:'#f5e020',
+    snsBg:'#fffde8', snsTitle:'#1a1600', snsAccent:'#8a7000', snsSub:'#b09010', snsBorder:'#c8a800', snsItemBg:'#faf0a0', snsItemText:'#3a3000'},
+  lime:     {accent:'#3a7c1e', accentBg:'#edfce0', accentBorder:'#90d870', bg:'#f0fce8', surface:'#ffffff', surface2:'#e0f8d0', border:'#b8e8a0', border2:'#90cc70', text:'#0a1e00', text2:'#204010', text3:'#608040', cardBg:'#284e10', cardSurface:'#183008', cardAccent:'#90d870', cardSub:'#60a040', iconColor:'#5dcc2a',
+    snsBg:'#f4fce8', snsTitle:'#0a1e00', snsAccent:'#3a8a10', snsSub:'#60aa30', snsBorder:'#50a020', snsItemBg:'#d0f0a8', snsItemText:'#1a3800'},
+  skyblue:  {accent:'#0a7abf', accentBg:'#e0f4fc', accentBorder:'#70c0e8', bg:'#eef8fc', surface:'#ffffff', surface2:'#d8eef8', border:'#a0d4ec', border2:'#70b8de', text:'#001828', text2:'#0a3050', text3:'#4088b0', cardBg:'#054878', cardSurface:'#022e50', cardAccent:'#70c0e8', cardSub:'#3090c0', iconColor:'#29b6f6',
+    snsBg:'#f0faff', snsTitle:'#001828', snsAccent:'#0080cc', snsSub:'#3090cc', snsBorder:'#0090dd', snsItemBg:'#c8eaf8', snsItemText:'#002848'},
 };
 
 var THEME_ORDER = ['gray','navy','skyblue','blue','teal','lime','green','yellow','brown','orange','pink','red','purple'];
@@ -562,9 +575,13 @@ function renderModal() {
         ms += '</div>';
       }
 
+      ms += '<div class="modal-label" style="margin-top:12px;margin-bottom:6px">コメント（任意・カードに表示されます）</div>';
+      ms += '<textarea id="snsCommentInp" placeholder="例：子どもとの初めての川泊まり！軽量化を意識しました。" oninput="S.snsComment=this.value" style="width:100%;height:64px;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px;font-size:13px;color:var(--text);background:var(--surface);font-family:inherit;resize:none;line-height:1.5"></textarea>';
       ms += '<div class="modal-actions"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-accent" onclick="goSnsStep(2)">プレビュー →</button></div>';
       ms += '</div></div>';
       app.innerHTML += ms;
+      var commentBox = document.getElementById('snsCommentInp');
+      if (commentBox) commentBox.value = S.snsComment || '';
 
     } else {
       // --- ステップ2: カードプレビュー ---
@@ -581,17 +598,29 @@ function renderModal() {
       var m4 = '<div class="modal-bg" onclick="closeModal()"><div class="modal" style="width:420px;max-width:100%" onclick="event.stopPropagation()">';
       m4 += '<h2>SNS用画像を保存</h2>';
       m4 += '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">プレビューを確認して「画像を保存」してください。</p>';
-      m4 += '<div id="shareCard" style="background:'+ct.cardBg+';border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;width:360px;height:360px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">';
+      var popBg = ct.snsBg || '#f0f9ff';
+      var popTitle = ct.snsTitle || '#0a2a4a';
+      var popAccent = ct.snsAccent || '#0077cc';
+      var popSub = ct.snsSub || '#4499cc';
+      var popSurface = 'rgba(0,119,204,0.08)';
+      var popBorder = ct.snsBorder || '#0077cc';
+      var popItemBg = ct.snsItemBg || '#ddeeff';
+      var popItemText = ct.snsItemText || '#003366';
+      m4 += '<div id="shareCard" style="background:'+popBg+';border-radius:16px;padding:26px;font-family:\'Hiragino Kaku Gothic ProN\',\'Yu Gothic\',sans-serif;margin-bottom:14px;width:360px;height:360px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;border:3px solid '+popBorder+';">';
       m4 += '<div>';
       if (snsDest) {
-        m4 += '<div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsDest+'&nbsp;'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
+        m4 += '<div style="font-size:19px;font-weight:700;color:'+popTitle+';margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsDest+'&nbsp;'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
       } else {
-        m4 += '<div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
+        m4 += '<div style="font-size:19px;font-weight:700;color:'+popTitle+';margin-bottom:2px;display:flex;justify-content:space-between;align-items:center"><span>'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px">'+iconStr+'</span></div>';
       }
-      m4 += '<div style="font-size:15px;font-weight:600;color:'+ct.cardAccent+';margin-bottom:12px;">'+snsStyle+'</div>';
-      m4 += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
-      m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:8px 12px;flex:1;text-align:center;"><div style="font-size:9px;color:'+ct.cardAccent+';margin-bottom:2px;">ベースウェイト</div><div style="font-size:18px;font-weight:700;color:#fff;">'+bwLabel+'</div><div style="font-size:9px;color:'+ct.cardSub+';margin-top:1px;">総重量 '+twLabel+'</div></div>';
-      m4 += '<div style="background:'+ct.cardSurface+';border-radius:8px;padding:8px 12px;flex:1;text-align:center;"><div style="font-size:9px;color:'+ct.cardAccent+';margin-bottom:2px;">装備数</div><div style="font-size:18px;font-weight:700;color:#fff;">'+tc+'<span style="font-size:10px;font-weight:400">点</span></div></div>';
+      m4 += '<div style="font-size:15px;font-weight:600;color:'+popAccent+';margin-bottom:14px;">'+snsStyle+'</div>';
+      m4 += '<div style="display:flex;gap:8px;margin-bottom:10px;align-items:stretch;">';
+      m4 += '<div style="background:'+popItemBg+';border-radius:8px;padding:8px 12px;min-width:110px;text-align:center;border:1px solid '+popBorder+';flex-shrink:0;"><div style="font-size:9px;color:'+popAccent+';margin-bottom:2px;font-weight:600;">ベースウェイト</div><div style="font-size:18px;font-weight:700;color:'+popTitle+';">'+bwLabel+'</div><div style="font-size:9px;color:'+popSub+';margin-top:1px;">総重量 '+twLabel+'</div></div>';
+      if (S.snsComment) {
+        m4 += '<div style="background:'+popItemBg+';border-radius:8px;padding:8px 12px;flex:1;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;">';
+        m4 += '<div style="font-size:12px;color:'+popTitle+';line-height:1.5;word-break:break-all;">'+esc(S.snsComment)+'</div>';
+        m4 += '</div>';
+      }
       m4 += '</div>';
       var rows = S.snsRows || [];
       var cardRowsThemed = '';
@@ -605,16 +634,16 @@ function renderModal() {
           });
         }
         var nameStr = itemNames.length > 0 ? itemNames.join('、') : '';
-        cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:'+ct.cardSurface+';border-radius:6px;margin-bottom:4px;">';
-        cardRowsThemed += '<span style="font-size:11px;color:#e8f0f8;white-space:nowrap;margin-right:8px;font-weight:500;">'+esc(row.cat)+'</span>';
-        cardRowsThemed += '<span style="font-size:10px;color:'+ct.cardAccent+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(nameStr)+'</span></div>';
+        cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:'+popItemBg+';border-radius:6px;margin-bottom:4px;border:1px solid rgba(0,119,204,0.2);">';
+        cardRowsThemed += '<span style="font-size:11px;color:'+popAccent+';white-space:nowrap;margin-right:8px;font-weight:600;">'+esc(row.cat)+'</span>';
+        cardRowsThemed += '<span style="font-size:10px;color:'+popItemText+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(nameStr)+'</span></div>';
       });
       if (cardRowsThemed) {
-        m4 += '<div style="font-size:9px;color:'+ct.cardAccent+';letter-spacing:0.08em;margin-bottom:5px;">主要アイテム</div>';
+        m4 += '<div style="font-size:9px;color:'+popAccent+';letter-spacing:0.1em;margin-bottom:5px;font-weight:600;">主要アイテム</div>';
         m4 += '<div>'+cardRowsThemed+'</div>';
       }
-      m4 += '<div style="font-size:9px;color:'+ct.cardSub+';text-align:right;margin-top:8px;">Gear List Today by BlueNileGear</div>';
       m4 += '</div>';
+      m4 += '<div style="font-size:9px;color:'+popSub+';text-align:right;">Gear List Today by BlueNileGear</div>';
       m4 += '</div>';
       m4 += '<div class="modal-actions"><button class="btn" onclick="goSnsStep(1)">← 戻る</button><button class="btn btn-accent" onclick="saveCardImage()">画像を保存</button></div>';
       m4 += '<div id="imgNote" style="font-size:12px;color:var(--accent);margin-top:6px;text-align:right;min-height:16px"></div>';
@@ -747,7 +776,7 @@ function openNew() { S.modal='newPlan'; S.mStep=1; S.mGenre=''; S.mStyle=''; S.m
 function showModal(n) {
   S.notice='';
   S.modal=n;
-  if (n==='sns') { S.snsStep=1; S.snsIcons=[]; S.snsItems={}; S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}]; }
+  if (n==='sns') { S.snsStep=1; S.snsIcons=[]; S.snsItems={}; S.snsComment=''; S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}]; }
   render();
 }
 function setSnsRowCat(ri, cat) {
