@@ -610,13 +610,18 @@ function renderModal() {
       m4 += '<div>';
       var genreText = snsDest ? snsDest+'　'+snsGenre : snsGenre;
       var genreLen = genreText.length;
-      var genreFontSize = genreLen <= 12 ? 19 : genreLen <= 18 ? 16 : genreLen <= 24 ? 14 : 12;
+      var genreFontSize = genreLen <= 12 ? 18 : genreLen <= 18 ? 15 : genreLen <= 24 ? 13 : 11;
+      m4 += '<div style="font-size:'+genreFontSize+'px;font-weight:700;color:'+popTitle+';line-height:1.3;margin-bottom:4px;">';
       if (snsDest) {
-        m4 += '<div style="font-size:'+genreFontSize+'px;font-weight:700;color:'+popTitle+';margin-bottom:2px;display:flex;justify-content:space-between;align-items:flex-start"><span style="flex:1;line-height:1.3">'+snsDest+'&nbsp;'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px;flex-shrink:0;margin-left:6px">'+iconStr+'</span></div>';
+        m4 += snsDest+'&nbsp;'+snsGenre;
       } else {
-        m4 += '<div style="font-size:'+genreFontSize+'px;font-weight:700;color:'+popTitle+';margin-bottom:2px;display:flex;justify-content:space-between;align-items:flex-start"><span style="flex:1;line-height:1.3">'+snsGenre+'</span><span style="font-size:20px;letter-spacing:2px;flex-shrink:0;margin-left:6px">'+iconStr+'</span></div>';
+        m4 += snsGenre;
       }
-      m4 += '<div style="font-size:15px;font-weight:600;color:'+popAccent+';margin-bottom:14px;">'+snsStyle+'</div>';
+      m4 += '</div>';
+      m4 += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+      m4 += '<div style="font-size:14px;font-weight:600;color:'+popAccent+';">'+snsStyle+'</div>';
+      m4 += '<div style="font-size:18px;letter-spacing:2px;">'+iconStr+'</div>';
+      m4 += '</div>';
       m4 += '<div style="display:flex;gap:8px;margin-bottom:10px;align-items:stretch;">';
       m4 += '<div style="background:'+popItemBg+';border-radius:8px;padding:8px 12px;min-width:110px;text-align:center;border:1px solid '+popBorder+';flex-shrink:0;"><div style="font-size:9px;color:'+popAccent+';margin-bottom:2px;font-weight:600;">ベースウェイト</div><div style="font-size:18px;font-weight:700;color:'+popTitle+';">'+bwLabel+'</div><div style="font-size:9px;color:'+popSub+';margin-top:1px;">総重量 '+twLabel+'</div></div>';
       if (S.snsComment) {
@@ -637,12 +642,12 @@ function renderModal() {
           });
         }
         var nameStr = itemNames.length > 0 ? itemNames.join('、') : '';
-        cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:'+popItemBg+';border-radius:6px;margin-bottom:4px;border:1px solid rgba(0,119,204,0.2);">';
+        cardRowsThemed += '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:'+popItemBg+';border-radius:6px;margin-bottom:3px;border:1px solid rgba(0,119,204,0.2);">';
         cardRowsThemed += '<span style="font-size:11px;color:'+popAccent+';white-space:nowrap;margin-right:8px;font-weight:600;">'+esc(row.cat)+'</span>';
         cardRowsThemed += '<span style="font-size:10px;color:'+popItemText+';text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+esc(nameStr)+'</span></div>';
       });
       if (cardRowsThemed) {
-        m4 += '<div style="font-size:9px;color:'+popAccent+';letter-spacing:0.1em;margin-bottom:5px;font-weight:600;">主要アイテム</div>';
+        m4 += '<div style="font-size:9px;color:'+popAccent+';letter-spacing:0.1em;margin-bottom:4px;font-weight:600;">主要アイテム</div>';
         m4 += '<div>'+cardRowsThemed+'</div>';
       }
       m4 += '</div>';
