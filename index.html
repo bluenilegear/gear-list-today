@@ -523,8 +523,12 @@ function renderModal() {
     var tw2 = plan ? gw(plan) : 0;
     var bw2 = plan ? gbw(plan) : 0;
     var ct = THEMES[S.theme] || THEMES.blue;
-    var SNS_ICONS = ['🏔️','🌊','🛶','🚵','🏕️','⛺','🌲','👨‍👧','🏊','🌏','🔥','🍩','☕️','🚃','🏝','⛰'];
-    var SNS_ICON_LABELS = {'🏔️':'山','🌊':'波','🛶':'カヌー','🚵':'自転車','🏕️':'キャンプ','⛺':'テント','🌲':'森','👨‍👧':'親子','🏊':'川・水泳','🌏':'地球','🔥':'焚火','🍩':'スイーツ','☕️':'コーヒー','🚃':'電車','🏝':'島','⛰':'峰'};
+    var SNS_ICON_CATS = {
+      'アウトドア・スポーツ': ['🏔️','⛰','🌋','🏝','🏕️','⛺','🛶','🚵','🏊','🧗','🎣','🏄','🤿','🎿','⛷','🏇','🧘','🥾','🪂','🎯','🏹','🔭','🪓','⛏','🧲','🪝','🛖','🗺','🧭','🪤'],
+      '天気・自然': ['☀️','🌤','⛅','🌧','⛈','🌩','❄️','🌈','🌊','🌲','🌳','🌴','🌿','🍀','🍁','🍂','🌾','🌵','🌙','⭐️','🌟','💫','🌍','🌏','🔥','💧','🌬','🌫','🌺','🌸','🦅','🦊','🐻','🦌','🐟','🐬','🦋'],
+      '食べ物・飲み物': ['🍳','🥩','🍖','🍗','🥓','🌮','🍱','🍜','🍲','🥘','🍛','🥗','🧆','🥚','🍣','🦑','🦀','🍣','🍡','🍩','🍪','🎂','🍫','🍰','☕️','🍵','🧃','🥤','🍺','🍻','🥂','🍷','🫖','🧋'],
+    };
+    if (!S.snsIconTab) S.snsIconTab = 'アウトドア・スポーツ';
 
     if (S.snsStep === 1) {
       var allCats = plan ? Object.keys(plan.categories).filter(function(cat){
@@ -537,10 +541,17 @@ function renderModal() {
       ms += '<h2>SNS用画像の設定</h2>';
 
       ms += '<div class="modal-label" style="margin-bottom:8px">アイコンを3つまで選んでください</div>';
-      ms += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">';
-      SNS_ICONS.forEach(function(ic) {
+      ms += '<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">';
+      Object.keys(SNS_ICON_CATS).forEach(function(tabName) {
+        var active = S.snsIconTab === tabName;
+        ms += '<button onclick="setSnsIconTab(\''+tabName+'\')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid '+(active?ct.accent:ct.border2)+';background:'+(active?ct.accentBg:'transparent')+';color:'+(active?ct.accent:'var(--text)')+';cursor:pointer;font-family:inherit">'+tabName+'</button>';
+      });
+      ms += '</div>';
+      ms += '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;max-height:120px;overflow-y:auto;padding:4px 0">';
+      var currentTabIcons = SNS_ICON_CATS[S.snsIconTab] || [];
+      currentTabIcons.forEach(function(ic) {
         var sel = S.snsIcons.indexOf(ic) >= 0;
-        ms += '<button onclick="toggleSnsIcon(\''+ic+'\')" style="font-size:20px;padding:5px 8px;border-radius:8px;border:2px solid '+(sel?ct.accent:ct.border2)+';background:'+(sel?ct.accentBg:'transparent')+';cursor:pointer" title="'+SNS_ICON_LABELS[ic]+'">'+ic+'</button>';
+        ms += '<button onclick="toggleSnsIcon(\''+ic+'\')" style="font-size:20px;padding:4px 7px;border-radius:8px;border:2px solid '+(sel?ct.accent:ct.border2)+';background:'+(sel?ct.accentBg:'transparent')+';cursor:pointer">'+ic+'</button>';
       });
       ms += '</div>';
       if (S.snsIcons.length > 0) {
@@ -784,9 +795,10 @@ function openNew() { S.modal='newPlan'; S.mStep=1; S.mGenre=''; S.mStyle=''; S.m
 function showModal(n) {
   S.notice='';
   S.modal=n;
-  if (n==='sns') { S.snsStep=1; S.snsIcons=[]; S.snsItems={}; S.snsComment=''; S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}]; }
+  if (n==='sns') { S.snsStep=1; S.snsIcons=[]; S.snsItems={}; S.snsComment=''; S.snsIconTab='アウトドア・スポーツ'; S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}]; }
   render();
 }
+function setSnsIconTab(tab) { S.snsIconTab = tab; render(); }
 function setSnsRowCat(ri, cat) {
   if (!S.snsRows) S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}];
   S.snsRows[ri] = {cat:cat, items:[]};
