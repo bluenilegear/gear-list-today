@@ -753,6 +753,7 @@ function saveBlogImage() {
     var statEls = clone.querySelectorAll('.stat');
     if (statEls.length > 0) statEls[0].style.display = 'none';
   }
+  var catGrids = clone.querySelectorAll('.cat-grid');
   catGrids.forEach(function(el){
     el.style.display='grid';
     el.style.gridTemplateColumns='1fr 1fr';
