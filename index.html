@@ -817,6 +817,7 @@ function toggleShowBW() {
   if (btn) btn.textContent = S.showBW ? 'BW表示中' : 'BW非表示';
   render();
 }
+function setSnsIconTab(tab) { S.snsIconTab = tab; render(); }
 function setSnsRowCat(ri, cat) {
   if (!S.snsRows) S.snsRows=[{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]},{cat:'',items:[]}];
   S.snsRows[ri] = {cat:cat, items:[]};
